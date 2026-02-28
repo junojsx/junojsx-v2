@@ -15,7 +15,7 @@ export default function Projects() {
     <section
       id="projects"
       aria-labelledby="projects-heading"
-      className="bg-white py-16 h-[100vh] sm:py-24 flex items-center justify-center"
+      className="bg-white py-16 h-[100vh] sm:py-24 flex items-center justify-center border-t border-solid-black/100 "
     >
       <div className="max-w-6xl   mx-auto px-4">
         {/* Decorative label — aria-hidden since heading already describes the section */}

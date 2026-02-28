@@ -55,7 +55,7 @@ export default function MoreAboutMe() {
     <section
       id="more-about"
       aria-labelledby="more-about-heading"
-      className="bg-[#E2DAF0] flex items-center justify-center h-[100vh] py-16 sm:py-24 relative overflow-hidden"
+      className=" border-t border-solid-black/100 bg-[#E2DAF0] flex items-center justify-center h-[100vh] py-16 sm:py-24 relative overflow-hidden"
     >
       {/* Decorative elements */}
       <span

@@ -13,7 +13,7 @@ export default function Home() {
     <section
       id="home"
       aria-labelledby="about-heading"
-      className="min-h-screen flex items-center bg-[#E2DAF0]"
+      className="border-t border-solid-black/100 min-h-screen flex items-center bg-[#E2DAF0]"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-20 grid md:grid-cols-2 gap-12 md:gap-16 items-center w-full">
         {/* Text content */}
@@ -61,7 +61,10 @@ export default function Home() {
         </div>
 
         {/* Photo + decorations — hidden below sm to prevent reflow issues */}
-        <div className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]" aria-hidden="true">
+        <div
+          className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]"
+          aria-hidden="true"
+        >
           {/* Arch-shaped photo frame — larger than before */}
           <div
             className="relative w-56 h-72 sm:w-100 sm:h-120 bg-deep-purple overflow-hidden"

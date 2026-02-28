@@ -47,7 +47,7 @@ export default function TechStack() {
     <section
       id="tech"
       aria-labelledby="tech-heading"
-      className="bg-white h-[100vh] mx-auto flex items-center justify-center py-16 sm:py-24 relative overflow-hidden"
+      className=" border-t border-solid-black/100bg-white h-[100vh] mx-auto flex items-center justify-center py-16 sm:py-24 relative overflow-hidden"
     >
       {/* Decorative elements */}
       <span
