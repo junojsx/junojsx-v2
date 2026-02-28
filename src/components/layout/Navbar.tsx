@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Download, Menu, X } from "lucide-react";
+
+import { Menu, X } from "lucide-react";
 import type { NavLink } from "@/types";
 
 const navLinks: NavLink[] = [
