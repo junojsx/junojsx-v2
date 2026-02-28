@@ -29,7 +29,7 @@ export default function Home() {
 
           <h1
             id="about-heading"
-            className="text-4xl md:text-5xl font-bold text-dark-gray leading-tight mb-2"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark-gray leading-tight mb-2"
           >
             I'm <span className="text-deep-purple">Juno,</span>
             <br />
@@ -57,13 +57,14 @@ export default function Home() {
           >
             See My Work
           </a>
+          <p className="sr-only">Available for freelance work</p>
         </div>
 
-        {/* Photo + decorations */}
-        <div className="relative flex justify-center items-end h-80 sm:h-[30rem]">
+        {/* Photo + decorations — hidden below sm to prevent reflow issues */}
+        <div className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]" aria-hidden="true">
           {/* Arch-shaped photo frame — larger than before */}
           <div
-            className="relative w-56 h-72 sm:w-72 sm:h-96 bg-deep-purple overflow-hidden"
+            className="relative w-56 h-72 sm:w-100 sm:h-120 bg-deep-purple overflow-hidden"
             style={{ borderRadius: "9999px 9999px 0 0" }}
             aria-hidden="true"
           >
@@ -88,7 +89,6 @@ export default function Home() {
           {/* Availability badge — spinning ring with pause/play control */}
           <div className="absolute top-0 right-2 sm:right-4">
             <div className="relative w-28 h-28 sm:w-32 sm:h-32">
-              <p className="sr-only">Available for freelance work</p>
               <svg
                 viewBox="0 0 110 110"
                 className="w-full h-full animate-spin"

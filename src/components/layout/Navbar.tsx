@@ -108,25 +108,6 @@ export default function Navbar() {
               </a>
             </li>
           ))}
-
-          <li className="md:ml-2 mt-2 md:mt-0">
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="border-deep-purple text-deep-purple bg-transparent
-                         hover:bg-deep-purple hover:text-white w-full md:w-auto"
-            >
-              <a
-                href="/resume.pdf"
-                download
-                aria-label="Download resume as PDF"
-              >
-                <Download className="mr-1 h-4 w-4" aria-hidden="true" />
-                Resume
-              </a>
-            </Button>
-          </li>
         </ul>
       </nav>
     </header>
