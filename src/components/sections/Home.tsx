@@ -15,9 +15,34 @@ export default function Home() {
       aria-labelledby="about-heading"
       className="border-t border-solid-black/100 min-h-screen flex items-center bg-[#E2DAF0]"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-20 grid md:grid-cols-2 gap-12 md:gap-16 items-center w-full">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-20 grid md:grid-cols-2 gap-8 md:gap-16 items-center w-full">
         {/* Text content */}
-        <div>
+        <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+          {/* Mobile-only small arch photo */}
+          <div className="flex sm:hidden justify-center mb-8" aria-hidden="true">
+            <div
+              className="w-28 h-36 bg-deep-purple overflow-hidden"
+              style={{ borderRadius: "9999px 9999px 0 0" }}
+            >
+              <img
+                src="justin.png"
+                alt=""
+                className="w-full h-full object-cover object-top"
+                width={112}
+                height={144}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = "none";
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.style.background =
+                      "linear-gradient(to bottom, #4E3C51 0%, #B6A5D0 100%)";
+                  }
+                }}
+              />
+            </div>
+          </div>
+
           {/* Decorative greeting badge — hidden from AT since heading already greets */}
           <div
             className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-8 bg-white/40"
@@ -45,7 +70,7 @@ export default function Home() {
             </span>
           </h1>
 
-          <p className="text-dark-gray/80 text-base leading-relaxed mt-8 mb-8 max-w-sm">
+          <p className="text-dark-gray/80 text-base leading-relaxed mt-8 mb-8 max-w-sm mx-auto sm:mx-0">
             I build inclusive digital experiences that work for everyone. I'm
             passionate about bridging great design and equitable access.
           </p>

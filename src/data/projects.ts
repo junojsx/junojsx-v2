@@ -21,6 +21,33 @@ export const projects: Project[] = [
   },
   {
     id: "project-3",
+    name: "DupeFlix",
+    description:
+      "A full-stack Netflix clone that replicates the core streaming experience with authentication, dynamic content browsing, and a responsive, modern UI. Built to showcase real-world frontend architecture, API integration, and scalable design.",
+    techTags: ["React", "TypeScript", "Storybook", "Radix UI"],
+    liveUrl: "https://example.com",
+    repoUrl: "https://github.com/yourusername/focuscraft",
+  },
+  {
+    id: "project-4",
+    name: "DupeFlix",
+    description:
+      "A full-stack Netflix clone that replicates the core streaming experience with authentication, dynamic content browsing, and a responsive, modern UI. Built to showcase real-world frontend architecture, API integration, and scalable design.",
+    techTags: ["React", "TypeScript", "Storybook", "Radix UI"],
+    liveUrl: "https://example.com",
+    repoUrl: "https://github.com/yourusername/focuscraft",
+  },
+  {
+    id: "project-5",
+    name: "DupeFlix",
+    description:
+      "A full-stack Netflix clone that replicates the core streaming experience with authentication, dynamic content browsing, and a responsive, modern UI. Built to showcase real-world frontend architecture, API integration, and scalable design.",
+    techTags: ["React", "TypeScript", "Storybook", "Radix UI"],
+    liveUrl: "https://example.com",
+    repoUrl: "https://github.com/yourusername/focuscraft",
+  },
+  {
+    id: "project-6",
     name: "Keylometer",
     description:
       "For my first project in this course, I decided to build my version of a speed typing challenge. As a novice mechanical keyboard enthusiast, I enjoy building keyboards using different switches depending on what sound profile and feel I am looking for at certain times. And to test out the build, I always use websites like monkeytype and kbsim.",
