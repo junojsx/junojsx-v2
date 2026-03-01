@@ -9,6 +9,17 @@
     <title>junojsx | Software Accessibility Engineer</title>
   </head>
   <body>
+    <!--
+      Hidden form for Netlify's build bot to detect.
+      The React component submits to this via fetch.
+      See: https://docs.netlify.com/forms/setup/#javascript-forms
+    -->
+    <form name="contact" data-netlify="true" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
