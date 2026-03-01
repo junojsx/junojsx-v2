@@ -23,7 +23,7 @@ export const projects: Project[] = [
     id: "project-3",
     name: "For Yohan",
     description:
-      "A text to speech app I created for my non-verbal little cousin, Yohan. The reason why I built it was to help her communicate more effectively and express her thoughts and feelings in a way that was accessible to her. I saw how much she struggled to communicate with others and wanted to create something that could help her connect with the world around her. The app allows her to type out messages and have them spoken aloud, making it easier for her to communicate with family, friends, and caregivers. It was a rewarding experience to see how much the app has improved her ability to express herself and connect with others. I hope that it continues to make a positive impact on her life and the lives of others who may benefit from similar technology. Thus, I pursued a career in tech to create more tools that can help people like Yohan and make a positive impact on their lives.",
+      "A text to speech app I created for my non-verbal little cousin, Yohan. The reason why I built it was to help her communicate more effectively and express her thoughts and feelings in a way that was accessible to her. I saw how much she struggled to communicate with others and wanted to create something that could help her connect with the world around her. She is why I pursued a career in tech.",
     techTags: ["React", "Bootstrap", "Speech Synthesis API"],
     liveUrl: "https://tangerine-syrniki-087126.netlify.app/",
     repoUrl: "https://github.com/junojsx/for-Yohan",
