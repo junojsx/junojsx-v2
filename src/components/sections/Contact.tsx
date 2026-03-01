@@ -35,6 +35,16 @@ export default function Contact() {
     e.preventDefault();
     setSubmitting(true);
 
+    // Netlify Forms only handles POST /  on the deployed site.
+    // In local dev the endpoint doesn't exist, so we skip the fetch.
+    if (import.meta.env.DEV) {
+      await new Promise((r) => setTimeout(r, 600));
+      setStatus("success");
+      e.currentTarget.reset();
+      setSubmitting(false);
+      return;
+    }
+
     const form = e.currentTarget;
     const body = new URLSearchParams(
       new FormData(form) as unknown as Record<string, string>,
