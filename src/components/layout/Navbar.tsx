@@ -84,9 +84,12 @@ export default function Navbar() {
           className={[
             "absolute md:static top-full left-0 right-0",
             "bg-white md:bg-transparent border-b border-gray-200 md:border-none",
-            "flex-col md:flex-row md:flex gap-1 items-center",
+            "flex flex-col md:flex-row gap-1 items-center",
             "px-4 md:px-0 pb-4 md:pb-0",
-            menuOpen ? "flex" : "hidden md:flex",
+            "transition-all duration-200 ease-in-out",
+            menuOpen
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-1 invisible md:opacity-100 md:translate-y-0 md:visible",
           ].join(" ")}
         >
           {navLinks.map((link) => (

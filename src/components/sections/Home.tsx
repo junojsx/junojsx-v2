@@ -19,13 +19,16 @@ export default function Home() {
         {/* Text content */}
         <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
           {/* Mobile-only small arch photo */}
-          <div className="flex sm:hidden justify-center mb-8" aria-hidden="true">
+          <div
+            className="flex sm:hidden justify-center mb-8"
+            aria-hidden="true"
+          >
             <div
-              className="w-28 h-36 bg-deep-purple overflow-hidden"
+              className="w-58 h-56 bg-deep-purple overflow-hidden"
               style={{ borderRadius: "9999px 9999px 0 0" }}
             >
               <img
-                src="justin.png"
+                src="juno-2.png"
                 alt=""
                 className="w-full h-full object-cover object-top"
                 width={112}
@@ -44,10 +47,7 @@ export default function Home() {
           </div>
 
           {/* Decorative greeting badge — hidden from AT since heading already greets */}
-          <div
-            className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-8 bg-white/40"
-            aria-hidden="true"
-          >
+          <div className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-8 bg-white/40">
             <span className="w-2 h-2 rounded-full bg-soft-teal" />
             Hello!
           </div>
@@ -92,16 +92,16 @@ export default function Home() {
         >
           {/* Arch-shaped photo frame — larger than before */}
           <div
-            className="relative w-56 h-72 sm:w-100 sm:h-120 bg-deep-purple overflow-hidden"
+            className="relative w-56 h-72 sm:w-120 sm:h-118 bg-deep-purple overflow-hidden"
             style={{ borderRadius: "9999px 9999px 0 0" }}
             aria-hidden="true"
           >
             <img
-              src="justin.png"
+              src="juno-2.png"
               alt=""
-              className="w-full h-full object-cover object-top"
-              width={288}
-              height={384}
+              className="w-120 h-120 object-cover object-top"
+              width={259}
+              height={354}
               onError={(e) => {
                 const target = e.currentTarget;
                 target.style.display = "none";
