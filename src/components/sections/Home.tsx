@@ -19,10 +19,7 @@ export default function Home() {
         {/* Text content */}
         <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
           {/* Mobile-only small arch photo */}
-          <div
-            className="flex sm:hidden justify-center mb-8"
-            aria-hidden="true"
-          >
+          <div className="flex sm:hidden justify-center mb-8">
             <div
               className="w-58 h-56 bg-deep-purple overflow-hidden"
               style={{ borderRadius: "9999px 9999px 0 0" }}
@@ -63,10 +60,7 @@ export default function Home() {
             <span className="relative inline-block">
               accessibility engineer.
               {/* Decorative underline — purely visual */}
-              <span
-                className="absolute -bottom-1 left-0 h-[3px] w-3/4 rounded-full bg-warm-gold"
-                aria-hidden="true"
-              />
+              <span className="absolute -bottom-1 left-0 h-[3px] w-3/4 rounded-full bg-warm-gold" />
             </span>
           </h1>
 
@@ -86,15 +80,11 @@ export default function Home() {
         </div>
 
         {/* Photo + decorations — hidden below sm to prevent reflow issues */}
-        <div
-          className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]"
-          aria-hidden="true"
-        >
+        <div className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]">
           {/* Arch-shaped photo frame — larger than before */}
           <div
             className="relative w-56 h-72 sm:w-120 sm:h-118 bg-deep-purple overflow-hidden"
             style={{ borderRadius: "9999px 9999px 0 0" }}
-            aria-hidden="true"
           >
             <img
               src="juno-2.png"
@@ -153,10 +143,7 @@ export default function Home() {
                 </text>
               </svg>
               {/* Arrow in center */}
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                aria-hidden="true"
-              >
+              <div className="absolute inset-0 flex items-center justify-center">
                 <svg
                   viewBox="0 0 24 24"
                   className="w-5 h-5"
@@ -188,15 +175,9 @@ export default function Home() {
                            transition-colors"
               >
                 {paused ? (
-                  <Play
-                    className="w-3 h-3 text-deep-purple group-hover:text-white"
-                    aria-hidden="true"
-                  />
+                  <Play className="w-3 h-3 text-deep-purple group-hover:text-white" />
                 ) : (
-                  <Pause
-                    className="w-3 h-3 text-deep-purple group-hover:text-white"
-                    aria-hidden="true"
-                  />
+                  <Pause className="w-3 h-3 text-deep-purple group-hover:text-white" />
                 )}
               </button>
             </div>

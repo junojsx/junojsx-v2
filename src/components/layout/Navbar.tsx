@@ -45,7 +45,14 @@ export default function Navbar() {
 
   return (
     // <header> already carries the implicit ARIA "banner" landmark — no role needed
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <header
+      className="sticky top-0 z-50 bg-white border-b border-gray-200"
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+          setMenuOpen(false);
+        }
+      }}
+    >
       <nav
         aria-label="Main navigation"
         className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between"

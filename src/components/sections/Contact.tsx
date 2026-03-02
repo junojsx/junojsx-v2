@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, useRef, type FormEvent, type FocusEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -27,25 +27,92 @@ const socialLinks = [
   },
 ];
 
+type Fields = { name: string; email: string; message: string };
+type FieldErrors = Partial<Fields>;
+
+function validateField(field: keyof Fields, value: string): string | undefined {
+  switch (field) {
+    case "name":
+      if (!value.trim()) return "Name is required.";
+      if (value.trim().length < 2) return "Name must be at least 2 characters.";
+      break;
+    case "email":
+      if (!value.trim()) return "Email address is required.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()))
+        return "Enter a valid email address (e.g. you@example.com).";
+      break;
+    case "message":
+      if (!value.trim()) return "Message is required.";
+      if (value.trim().length < 10)
+        return "Message must be at least 10 characters.";
+      break;
+  }
+}
+
+function validateAll(fields: Fields): FieldErrors {
+  return Object.fromEntries(
+    (Object.keys(fields) as (keyof Fields)[])
+      .map((k) => [k, validateField(k, fields[k])])
+      .filter(([, v]) => v !== undefined),
+  );
+}
+
 export default function Contact() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  // Track which fields the user has interacted with so errors show on blur
+  const [touched, setTouched] = useState<Partial<Record<keyof Fields, boolean>>>({});
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+
+  function handleBlur(e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const field = e.target.name as keyof Fields;
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const error = validateField(field, e.target.value);
+    setErrors((prev) => ({ ...prev, [field]: error }));
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    const form = e.currentTarget;
+    const data: Fields = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+    };
+
+    const newErrors = validateAll(data);
+
+    // Mark all fields as touched so all errors become visible
+    setTouched({ name: true, email: true, message: true });
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      // Move focus to the first invalid field (WCAG 3.3.1)
+      if (newErrors.name) nameRef.current?.focus();
+      else if (newErrors.email) emailRef.current?.focus();
+      else if (newErrors.message) messageRef.current?.focus();
+      return;
+    }
+
     setSubmitting(true);
 
-    // Netlify Forms only handles POST /  on the deployed site.
+    // Netlify Forms only handles POST / on the deployed site.
     // In local dev the endpoint doesn't exist, so we skip the fetch.
     if (import.meta.env.DEV) {
       await new Promise((r) => setTimeout(r, 600));
       setStatus("success");
-      e.currentTarget.reset();
+      form.reset();
+      setTouched({});
+      setErrors({});
       setSubmitting(false);
       return;
     }
 
-    const form = e.currentTarget;
     const body = new URLSearchParams(
       new FormData(form) as unknown as Record<string, string>,
     ).toString();
@@ -59,12 +126,18 @@ export default function Contact() {
       if (!res.ok) throw new Error(`${res.status}`);
       setStatus("success");
       form.reset();
+      setTouched({});
+      setErrors({});
     } catch {
       setStatus("error");
     } finally {
       setSubmitting(false);
     }
   }
+
+  // Only show an error if the field has been touched or a submit was attempted
+  const visibleError = (field: keyof Fields) =>
+    touched[field] ? errors[field] : undefined;
 
   return (
     <section
@@ -123,72 +196,100 @@ export default function Contact() {
           >
             {/* Required by Netlify for JS-submitted forms */}
             <input type="hidden" name="form-name" value="contact" />
+
+            {/* Name */}
             <div className="space-y-1.5">
-              <Label
-                htmlFor="contact-name"
-                className="text-dark-gray font-medium"
-              >
+              <Label htmlFor="contact-name" className="text-dark-gray font-medium">
                 Name
-                <span aria-hidden="true" className="text-deep-purple ml-0.5">
-                  *
-                </span>
+                <span aria-hidden="true" className="text-deep-purple ml-0.5">*</span>
                 <span className="sr-only">(required)</span>
               </Label>
               <Input
+                ref={nameRef}
                 id="contact-name"
                 name="name"
                 type="text"
                 autoComplete="name"
                 required
                 aria-required="true"
+                aria-invalid={visibleError("name") ? "true" : "false"}
+                aria-describedby={visibleError("name") ? "contact-name-error" : undefined}
                 placeholder="Your full name"
-                className="border-input-focus/40 focus:border-input-focus"
+                onBlur={handleBlur}
+                className={[
+                  "border-input-focus/40 focus:border-input-focus",
+                  visibleError("name") ? "border-red-500 focus:border-red-500" : "",
+                ].join(" ")}
               />
+              {visibleError("name") && (
+                <p id="contact-name-error" role="alert" className="text-red-600 text-xs flex items-center gap-1 mt-1">
+                  <span aria-hidden="true">⚠</span>
+                  {visibleError("name")}
+                </p>
+              )}
             </div>
 
+            {/* Email */}
             <div className="space-y-1.5">
-              <Label
-                htmlFor="contact-email"
-                className="text-dark-gray font-medium"
-              >
+              <Label htmlFor="contact-email" className="text-dark-gray font-medium">
                 Email
-                <span aria-hidden="true" className="text-deep-purple ml-0.5">
-                  *
-                </span>
+                <span aria-hidden="true" className="text-deep-purple ml-0.5">*</span>
                 <span className="sr-only">(required)</span>
               </Label>
               <Input
+                ref={emailRef}
                 id="contact-email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
                 aria-required="true"
+                aria-invalid={visibleError("email") ? "true" : "false"}
+                aria-describedby={visibleError("email") ? "contact-email-error" : undefined}
                 placeholder="you@example.com"
-                className="border-input-focus/40 focus:border-input-focus"
+                onBlur={handleBlur}
+                className={[
+                  "border-input-focus/40 focus:border-input-focus",
+                  visibleError("email") ? "border-red-500 focus:border-red-500" : "",
+                ].join(" ")}
               />
+              {visibleError("email") && (
+                <p id="contact-email-error" role="alert" className="text-red-600 text-xs flex items-center gap-1 mt-1">
+                  <span aria-hidden="true">⚠</span>
+                  {visibleError("email")}
+                </p>
+              )}
             </div>
 
+            {/* Message */}
             <div className="space-y-1.5">
-              <Label
-                htmlFor="contact-message"
-                className="text-dark-gray font-medium"
-              >
+              <Label htmlFor="contact-message" className="text-dark-gray font-medium">
                 Message
-                <span aria-hidden="true" className="text-deep-purple ml-0.5">
-                  *
-                </span>
+                <span aria-hidden="true" className="text-deep-purple ml-0.5">*</span>
                 <span className="sr-only">(required)</span>
               </Label>
               <Textarea
+                ref={messageRef}
                 id="contact-message"
                 name="message"
                 required
                 aria-required="true"
+                aria-invalid={visibleError("message") ? "true" : "false"}
+                aria-describedby={visibleError("message") ? "contact-message-error" : undefined}
                 rows={5}
                 placeholder="Tell me what you're working on…"
-                className="border-input-focus/40 focus:border-input-focus resize-none"
+                onBlur={handleBlur}
+                className={[
+                  "border-input-focus/40 focus:border-input-focus resize-none",
+                  visibleError("message") ? "border-red-500 focus:border-red-500" : "",
+                ].join(" ")}
               />
+              {visibleError("message") && (
+                <p id="contact-message-error" role="alert" className="text-red-600 text-xs flex items-center gap-1 mt-1">
+                  <span aria-hidden="true">⚠</span>
+                  {visibleError("message")}
+                </p>
+              )}
             </div>
 
             <Button
