@@ -1,3 +1,5 @@
+import { AnimateIn } from "@/components/ui/AnimateIn";
+
 const experiences = [
   {
     period: "FEB 2025 – PRESENT",
@@ -55,7 +57,7 @@ export default function MoreAboutMe() {
     <section
       id="more-about"
       aria-labelledby="more-about-heading"
-      className="bg-[#E2DAF0] flex items-center justify-center h-[100vh] py-16 sm:py-24 relative overflow-hidden"
+      className=" border-t border-solid-black/100 bg-[#E2DAF0] flex items-center justify-center min-h-screen py-16 sm:py-24 relative overflow-hidden"
     >
       {/* Decorative elements */}
       <span
@@ -79,10 +81,10 @@ export default function MoreAboutMe() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 grid md:grid-cols-[2fr_3fr] gap-12 md:gap-16 items-start">
         {/* Left column */}
-        <div className="flex flex-col items-center md:items-start gap-6">
+        <AnimateIn from="bottom" duration={700} className="flex flex-col items-center md:items-start gap-6">
           {/* Circular photo — decorative duplicate of hero photo */}
           <div
-            className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden bg-deep-purple ring-4 ring-white shadow-lg shrink-0"
+            className="w-60 h-60 sm:w-70 sm:h-70 rounded-full overflow-hidden bg-deep-purple ring-4 ring-white shadow-lg shrink-0"
             aria-hidden="true"
           >
             <img
@@ -91,6 +93,7 @@ export default function MoreAboutMe() {
               className="w-full h-full object-cover object-top"
               width={192}
               height={192}
+              loading="lazy"
               onError={(e) => {
                 const t = e.currentTarget;
                 t.style.display = "none";
@@ -112,51 +115,49 @@ export default function MoreAboutMe() {
               challenging opportunities.
             </p>
           </div>
-
-          <a
-            href="/resume.pdf"
-            download
-            aria-label="Download resume as PDF"
-            className="inline-block border-2 border-dark-gray text-dark-gray px-6 py-3
-                       rounded-lg font-medium text-sm hover:bg-dark-gray hover:text-white transition-colors"
-          >
-            More About Me
-          </a>
-        </div>
+        </AnimateIn>
 
         {/* Right column */}
         <div>
-          {/* Decorative badge — aria-hidden since heading already labels the section */}
-          <div
-            className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-5 bg-white/40"
-            aria-hidden="true"
-          >
-            <span className="w-2 h-2 rounded-full bg-soft-teal" />
-            About
-          </div>
+          <AnimateIn from="bottom" delay={150} duration={700}>
+            {/* Decorative badge — aria-hidden since heading already labels the section */}
+            <div
+              className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-5 bg-white/40"
+              aria-hidden="true"
+            >
+              <span className="w-2 h-2 rounded-full bg-soft-teal" />
+              About
+            </div>
 
-          <h2
-            id="more-about-heading"
-            className="text-3xl md:text-4xl font-bold text-dark-gray mb-5 leading-tight"
-          >
-            More about me
-          </h2>
+            <h2
+              id="more-about-heading"
+              className="text-3xl md:text-4xl font-bold text-dark-gray mb-5 leading-tight"
+            >
+              More about me
+            </h2>
 
-          <p className="text-dark-gray/80 text-sm leading-relaxed mb-3">
-            I'm a software accessibility engineer passionate about crafting
-            digital experiences that are inclusive by design. I combine deep
-            technical knowledge with a commitment to equitable access.
-          </p>
-          <p className="text-dark-gray/80 text-sm leading-relaxed mb-10">
-            My journey in this field has been driven by a belief that the best
-            software works for everyone — leveraging modern technologies while
-            keeping people at the center of every decision.
-          </p>
+            <p className="text-dark-gray/80 text-sm leading-relaxed mb-3">
+              I'm a software accessibility engineer passionate about crafting
+              digital experiences that are inclusive by design. I combine deep
+              technical knowledge with a commitment to equitable access.
+            </p>
+            <p className="text-dark-gray/80 text-sm leading-relaxed mb-10">
+              My journey in this field has been driven by a belief that the best
+              software works for everyone — leveraging modern technologies while
+              keeping people at the center of every decision.
+            </p>
+          </AnimateIn>
 
           {/* Work experience timeline */}
           <ol aria-label="Work experience">
             {experiences.map((exp, i) => (
-              <li key={i} className="relative pl-7 pb-8">
+              <AnimateIn
+                as="li"
+                key={i}
+                delay={200 + i * 80}
+                duration={550}
+                className="relative pl-7 pb-8"
+              >
                 {/* Vertical connecting line — hidden from AT */}
                 {i < experiences.length - 1 && (
                   <span
@@ -183,7 +184,7 @@ export default function MoreAboutMe() {
                 <p className="text-dark-gray/75 text-xs leading-relaxed mt-1">
                   {exp.description}
                 </p>
-              </li>
+              </AnimateIn>
             ))}
           </ol>
         </div>

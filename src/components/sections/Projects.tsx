@@ -9,39 +9,49 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Github } from "lucide-react";
+import { AnimateIn } from "@/components/ui/AnimateIn";
 
 export default function Projects() {
   return (
     <section
       id="projects"
       aria-labelledby="projects-heading"
-      className="bg-white py-16 h-[100vh] sm:py-24 flex items-center justify-center"
+      className="bg-white py-16 min-h-screen sm:py-24 flex items-center justify-center border-t border-solid-black/100 "
     >
       <div className="max-w-6xl   mx-auto px-4">
-        {/* Decorative label — aria-hidden since heading already describes the section */}
-        <p
-          className="text-soft-teal font-semibold uppercase tracking-widest text-sm text-center mb-3"
-          aria-hidden="true"
-        >
-          What I've built
-        </p>
-        <h2
-          id="projects-heading"
-          className="text-3xl font-bold text-dark-gray text-center mb-4"
-        >
-          Deployed Projects
-        </h2>
-        <p className="text-center text-dark-gray/70 mb-14 max-w-xl mx-auto">
-          A selection of accessible, production-ready applications I've shipped.
-        </p>
+        {/* Heading area */}
+        <AnimateIn from="bottom" duration={600}>
+          {/* Decorative label — aria-hidden since heading already describes the section */}
+          <p
+            className="text-soft-teal font-semibold uppercase tracking-widest text-sm text-center mb-3"
+            aria-hidden="true"
+          >
+            What I've built
+          </p>
+          <h2
+            id="projects-heading"
+            className="text-3xl font-bold text-dark-gray text-center mb-4"
+          >
+            Deployed Projects
+          </h2>
+          <p className="text-center text-dark-gray/70 mb-14 max-w-xl mx-auto">
+            A selection of accessible, production-ready applications I've shipped.
+          </p>
+        </AnimateIn>
 
         <ul
           role="list"
           aria-label="Project gallery"
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {projects.map((project) => (
-            <li key={project.id}>
+          {projects.map((project, i) => (
+            <AnimateIn
+              as="li"
+              key={project.id}
+              delay={i * 100}
+              duration={600}
+              className="h-full"
+            >
               <article
                 aria-labelledby={`project-title-${project.id}`}
                 className="h-full"
@@ -115,7 +125,7 @@ export default function Projects() {
                   </CardFooter>
                 </Card>
               </article>
-            </li>
+            </AnimateIn>
           ))}
         </ul>
       </div>

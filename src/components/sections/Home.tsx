@@ -13,16 +13,38 @@ export default function Home() {
     <section
       id="home"
       aria-labelledby="about-heading"
-      className="min-h-screen flex items-center bg-[#E2DAF0]"
+      className="border-t border-solid-black/100 min-h-screen flex items-center bg-[#E2DAF0]"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-20 grid md:grid-cols-2 gap-12 md:gap-16 items-center w-full">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-20 grid md:grid-cols-2 gap-8 md:gap-16 items-center w-full">
         {/* Text content */}
-        <div>
+        <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+          {/* Mobile-only small arch photo */}
+          <div className="flex sm:hidden justify-center mb-8">
+            <div
+              className="w-58 h-56 bg-deep-purple overflow-hidden"
+              style={{ borderRadius: "9999px 9999px 0 0" }}
+            >
+              <img
+                src="juno-2.png"
+                alt=""
+                className="w-full h-full object-cover object-top"
+                width={112}
+                height={144}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = "none";
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.style.background =
+                      "linear-gradient(to bottom, #4E3C51 0%, #B6A5D0 100%)";
+                  }
+                }}
+              />
+            </div>
+          </div>
+
           {/* Decorative greeting badge — hidden from AT since heading already greets */}
-          <div
-            className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-8 bg-white/40"
-            aria-hidden="true"
-          >
+          <div className="inline-flex items-center gap-2 border border-dark-gray/25 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-dark-gray mb-8 bg-white/40">
             <span className="w-2 h-2 rounded-full bg-soft-teal" />
             Hello!
           </div>
@@ -38,14 +60,11 @@ export default function Home() {
             <span className="relative inline-block">
               accessibility engineer.
               {/* Decorative underline — purely visual */}
-              <span
-                className="absolute -bottom-1 left-0 h-[3px] w-3/4 rounded-full bg-warm-gold"
-                aria-hidden="true"
-              />
+              <span className="absolute -bottom-1 left-0 h-[3px] w-3/4 rounded-full bg-warm-gold" />
             </span>
           </h1>
 
-          <p className="text-dark-gray/80 text-base leading-relaxed mt-8 mb-8 max-w-sm">
+          <p className="text-dark-gray/80 text-base leading-relaxed mt-8 mb-8 max-w-sm mx-auto sm:mx-0">
             I build inclusive digital experiences that work for everyone. I'm
             passionate about bridging great design and equitable access.
           </p>
@@ -61,19 +80,18 @@ export default function Home() {
         </div>
 
         {/* Photo + decorations — hidden below sm to prevent reflow issues */}
-        <div className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]" aria-hidden="true">
+        <div className="hidden sm:flex relative justify-center items-end h-80 sm:h-[30rem]">
           {/* Arch-shaped photo frame — larger than before */}
           <div
-            className="relative w-56 h-72 sm:w-100 sm:h-120 bg-deep-purple overflow-hidden"
+            className="relative w-56 h-72 sm:w-120 sm:h-118 bg-deep-purple overflow-hidden"
             style={{ borderRadius: "9999px 9999px 0 0" }}
-            aria-hidden="true"
           >
             <img
-              src="justin.png"
+              src="juno-2.png"
               alt=""
-              className="w-full h-full object-cover object-top"
-              width={288}
-              height={384}
+              className="w-120 h-120 object-cover object-top"
+              width={259}
+              height={354}
               onError={(e) => {
                 const target = e.currentTarget;
                 target.style.display = "none";
@@ -125,10 +143,7 @@ export default function Home() {
                 </text>
               </svg>
               {/* Arrow in center */}
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                aria-hidden="true"
-              >
+              <div className="absolute inset-0 flex items-center justify-center">
                 <svg
                   viewBox="0 0 24 24"
                   className="w-5 h-5"
@@ -160,15 +175,9 @@ export default function Home() {
                            transition-colors"
               >
                 {paused ? (
-                  <Play
-                    className="w-3 h-3 text-deep-purple group-hover:text-white"
-                    aria-hidden="true"
-                  />
+                  <Play className="w-3 h-3 text-deep-purple group-hover:text-white" />
                 ) : (
-                  <Pause
-                    className="w-3 h-3 text-deep-purple group-hover:text-white"
-                    aria-hidden="true"
-                  />
+                  <Pause className="w-3 h-3 text-deep-purple group-hover:text-white" />
                 )}
               </button>
             </div>
