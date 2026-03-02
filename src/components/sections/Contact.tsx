@@ -62,7 +62,9 @@ export default function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   // Track which fields the user has interacted with so errors show on blur
-  const [touched, setTouched] = useState<Partial<Record<keyof Fields, boolean>>>({});
+  const [touched, setTouched] = useState<
+    Partial<Record<keyof Fields, boolean>>
+  >({});
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -82,7 +84,8 @@ export default function Contact() {
     const data: Fields = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement)
+        .value,
     };
 
     const newErrors = validateAll(data);
@@ -199,9 +202,14 @@ export default function Contact() {
 
             {/* Name */}
             <div className="space-y-1.5">
-              <Label htmlFor="contact-name" className="text-dark-gray font-medium">
+              <Label
+                htmlFor="contact-name"
+                className="text-dark-gray font-medium"
+              >
                 Name
-                <span aria-hidden="true" className="text-deep-purple ml-0.5">*</span>
+                <span aria-hidden="true" className="text-deep-purple ml-0.5">
+                  *
+                </span>
                 <span className="sr-only">(required)</span>
               </Label>
               <Input
@@ -213,17 +221,25 @@ export default function Contact() {
                 required
                 aria-required="true"
                 aria-invalid={visibleError("name") ? "true" : "false"}
-                aria-describedby={visibleError("name") ? "contact-name-error" : undefined}
+                aria-describedby={
+                  visibleError("name") ? "contact-name-error" : undefined
+                }
                 placeholder="Your full name"
                 onBlur={handleBlur}
                 className={[
                   "border-input-focus/40 focus:border-input-focus",
-                  visibleError("name") ? "border-red-500 focus:border-red-500" : "",
+                  visibleError("name")
+                    ? "border-red-500 focus:border-red-500"
+                    : "",
                 ].join(" ")}
               />
               {visibleError("name") && (
-                <p id="contact-name-error" role="alert" className="text-red-600 text-xs flex items-center gap-1 mt-1">
-                  <span aria-hidden="true">⚠</span>
+                <p
+                  id="contact-name-error"
+                  role="alert"
+                  className="text-red-600 text-xs flex items-center gap-1 mt-1"
+                >
+                  <span aria-hidden="true">❌</span>
                   {visibleError("name")}
                 </p>
               )}
@@ -231,9 +247,14 @@ export default function Contact() {
 
             {/* Email */}
             <div className="space-y-1.5">
-              <Label htmlFor="contact-email" className="text-dark-gray font-medium">
+              <Label
+                htmlFor="contact-email"
+                className="text-dark-gray font-medium"
+              >
                 Email
-                <span aria-hidden="true" className="text-deep-purple ml-0.5">*</span>
+                <span aria-hidden="true" className="text-deep-purple ml-0.5">
+                  *
+                </span>
                 <span className="sr-only">(required)</span>
               </Label>
               <Input
@@ -245,17 +266,25 @@ export default function Contact() {
                 required
                 aria-required="true"
                 aria-invalid={visibleError("email") ? "true" : "false"}
-                aria-describedby={visibleError("email") ? "contact-email-error" : undefined}
+                aria-describedby={
+                  visibleError("email") ? "contact-email-error" : undefined
+                }
                 placeholder="you@example.com"
                 onBlur={handleBlur}
                 className={[
                   "border-input-focus/40 focus:border-input-focus",
-                  visibleError("email") ? "border-red-500 focus:border-red-500" : "",
+                  visibleError("email")
+                    ? "border-red-500 focus:border-red-500"
+                    : "",
                 ].join(" ")}
               />
               {visibleError("email") && (
-                <p id="contact-email-error" role="alert" className="text-red-600 text-xs flex items-center gap-1 mt-1">
-                  <span aria-hidden="true">⚠</span>
+                <p
+                  id="contact-email-error"
+                  role="alert"
+                  className="text-red-600 text-xs flex items-center gap-1 mt-1"
+                >
+                  <span aria-hidden="true">❌</span>
                   {visibleError("email")}
                 </p>
               )}
@@ -263,9 +292,14 @@ export default function Contact() {
 
             {/* Message */}
             <div className="space-y-1.5">
-              <Label htmlFor="contact-message" className="text-dark-gray font-medium">
+              <Label
+                htmlFor="contact-message"
+                className="text-dark-gray font-medium"
+              >
                 Message
-                <span aria-hidden="true" className="text-deep-purple ml-0.5">*</span>
+                <span aria-hidden="true" className="text-deep-purple ml-0.5">
+                  *
+                </span>
                 <span className="sr-only">(required)</span>
               </Label>
               <Textarea
@@ -275,18 +309,26 @@ export default function Contact() {
                 required
                 aria-required="true"
                 aria-invalid={visibleError("message") ? "true" : "false"}
-                aria-describedby={visibleError("message") ? "contact-message-error" : undefined}
+                aria-describedby={
+                  visibleError("message") ? "contact-message-error" : undefined
+                }
                 rows={5}
                 placeholder="Tell me what you're working on…"
                 onBlur={handleBlur}
                 className={[
                   "border-input-focus/40 focus:border-input-focus resize-none",
-                  visibleError("message") ? "border-red-500 focus:border-red-500" : "",
+                  visibleError("message")
+                    ? "border-red-500 focus:border-red-500"
+                    : "",
                 ].join(" ")}
               />
               {visibleError("message") && (
-                <p id="contact-message-error" role="alert" className="text-red-600 text-xs flex items-center gap-1 mt-1">
-                  <span aria-hidden="true">⚠</span>
+                <p
+                  id="contact-message-error"
+                  role="alert"
+                  className="text-red-600 text-xs flex items-center gap-1 mt-1"
+                >
+                  <span aria-hidden="true">❌</span>
                   {visibleError("message")}
                 </p>
               )}
