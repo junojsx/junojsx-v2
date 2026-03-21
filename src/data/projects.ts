@@ -7,8 +7,17 @@ export const projects: Project[] = [
     description:
       "A dashboard tool that audits web pages for WCAG compliance and generates actionable accessibility reports.",
     techTags: ["NextJS", "TypeScript", "Supabase", "Tailwind CSS", "ShadCN UI"],
-    liveUrl: "https://a11y-ledger.vercel.app/",
+    liveUrl: "https://a11yledger.com/",
     repoUrl: "https://github.com/junojsx/a11y-ledger",
+  },
+  {
+    id: "project-2",
+    name: "PictureTown Studios",
+    description:
+      "A portfolio website for a local director and cinematographer.",
+    techTags: ["NextJS", "TypeScript", "Tailwind CSS", "ShadCN UI"],
+    liveUrl: "https://picturetownstudios.com/",
+    repoUrl: "https://github.com/junojsx/picturetown",
   },
   {
     id: "project-2",
