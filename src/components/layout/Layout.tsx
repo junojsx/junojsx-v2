@@ -10,6 +10,9 @@ export default function Layout() {
 
       <Navbar />
 
+      <div style={{ padding: 40, background: "red", color: "white", fontSize: 24, fontWeight: "bold", textAlign: "center" }}>
+        DEBUG: Layout Outlet is rendering below this line
+      </div>
       <Outlet />
 
       <footer className="bg-deep-purple text-white text-center py-6 text-sm">
