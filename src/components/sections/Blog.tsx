@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock } from "lucide-react";
-import { client } from "@/lib/sanityClient";
 import { ALL_POSTS_QUERY } from "@/lib/queries";
 import type { SanityPost } from "@/types";
 
