@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { PortableText } from "@portabletext/react";
 import { ArrowLeft, Clock } from "lucide-react";
-import { client } from "@/lib/sanityClient";
 import { POST_BY_SLUG_QUERY } from "@/lib/queries";
 import type { SanityPost } from "@/types";
 
@@ -23,11 +22,21 @@ export default function BlogPostPage() {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
-    client.fetch<SanityPost>(POST_BY_SLUG_QUERY, { slug }).then((data) => {
-      if (!data) setNotFound(true);
-      else setPost(data);
-      setLoading(false);
-    });
+    const projectId = import.meta.env.VITE_SANITY_PROJECT_ID ?? 'n5l953ie';
+    const query = encodeURIComponent(POST_BY_SLUG_QUERY);
+    const url = `https://${projectId}.api.sanity.io/v2024-01-01/data/query/production?query=${query}&$slug="${encodeURIComponent(slug)}"`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        if (!json.result) setNotFound(true);
+        else setPost(json.result);
+        setLoading(false);
+      })
+      .catch(() => {
+        setNotFound(true);
+        setLoading(false);
+      });
   }, [slug]);
 
   if (notFound) return <Navigate to="/blog" replace />;
