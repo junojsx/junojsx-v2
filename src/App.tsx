@@ -1,45 +1,21 @@
-import Navbar from "@/components/layout/Navbar";
-import Home from "@/components/sections/Home";
-import TechStack from "@/components/sections/TechStack";
-import MoreAboutMe from "@/components/sections/MoreAboutMe";
-import Projects from "@/components/sections/Projects";
-import Contact from "@/components/sections/Contact";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Layout from "@/components/layout/Layout";
+import HomePage from "@/pages/HomePage";
+import BlogPage from "@/pages/BlogPage";
+import BlogPostPage from "@/pages/BlogPostPage";
 
 export default function App() {
   return (
-    <>
-      {/* Skip navigation — first focusable element, appears on keyboard focus */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-
-      <Navbar />
-
-      {/*
-        tabIndex={-1} makes <main> programmatically focusable when the skip link
-        is activated, without placing it in the natural tab order.
-      */}
-      <main id="main-content" tabIndex={-1} className="outline-none">
-        <Home />
-        <TechStack />
-        <MoreAboutMe />
-        <Projects />
-        <Contact />
-      </main>
-
-      {/* <footer> has an implicit ARIA role of "contentinfo" — no role attr needed */}
-      <footer className="bg-deep-purple text-white text-center py-6 text-sm">
-        {/* text-white/80 on deep-purple → ~6.4:1 ✅  (text-soft-lavender was 4.03:1 ❌) */}
-        <p className="text-white/80">
-          © {new Date().getFullYear()}{" "}
-          <span className="text-white font-medium">junojsx</span> — Built with
-          React, Vite & TailwindCSS
-        </p>
-        {/* text-white/70 on deep-purple → ~5.4:1 ✅  (text-soft-lavender/70 was ~2.8:1 ❌) */}
-        <p className="mt-1 text-white/70 text-xs">
-          Designed and built with accessibility in mind · WCAG AA compliant
-        </p>
-      </footer>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/" element={<Navigate to="/blog" replace />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
