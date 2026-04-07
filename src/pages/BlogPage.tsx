@@ -43,6 +43,9 @@ export default function BlogPage() {
 
   return (
     <main id="main-content" tabIndex={-1} className="outline-none">
+      <div style={{ padding: 20, background: "blue", color: "white", fontSize: 20, fontWeight: "bold" }}>
+        DEBUG: BlogPage is rendering
+      </div>
       <BlogErrorBoundary>
         <Blog standalone />
       </BlogErrorBoundary>
