@@ -25,9 +25,13 @@ export default function Blog({ standalone = false }: BlogProps) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    client
-      .fetch<SanityPost[]>(ALL_POSTS_QUERY)
-      .then((data) => setPosts(data ?? []))
+    const projectId = import.meta.env.VITE_SANITY_PROJECT_ID ?? 'n5l953ie';
+    const query = encodeURIComponent(ALL_POSTS_QUERY);
+    const url = `https://${projectId}.api.sanity.io/v2024-01-01/data/query/production?query=${query}`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => setPosts(json.result ?? []))
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
