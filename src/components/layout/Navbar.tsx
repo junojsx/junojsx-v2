@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, Menu, X } from "lucide-react";
 import type { NavLink } from "@/types";
 import { blogPosts } from "@/data/blogPosts";
+import { useSanityPostList } from "@/hooks/useSanityPostList";
 
 const navLinksBeforeBlog: NavLink[] = [
   { label: "Home", href: "#home" },
@@ -27,7 +28,20 @@ export default function Navbar() {
   const blogNavRef = useRef<HTMLLIElement>(null);
 
   const onHomePage = location.pathname === "/";
-  const onBlogPage = location.pathname === "/blog";
+  const onBlogIndex =
+    location.pathname === "/blog" || location.pathname === "/blog/";
+  const onBlogRoute = location.pathname.startsWith("/blog");
+  const { posts: sanityPosts, loading: postsLoading, error: postsError } =
+    useSanityPostList();
+
+  const navPostLinks =
+    sanityPosts.length > 0
+      ? sanityPosts.map((p) => ({ title: p.title, slug: p.slug.current }))
+      : postsLoading
+        ? []
+        : postsError
+          ? blogPosts.map((p) => ({ title: p.title, slug: p.slug }))
+          : [];
 
   useEffect(() => {
     if (!blogNavOpen) return;
@@ -171,7 +185,7 @@ export default function Navbar() {
                 onClick={() => setBlogNavOpen((v) => !v)}
                 className={[
                   "flex w-full md:w-auto items-center justify-between gap-1 px-3 py-2 rounded text-sm font-medium transition-colors",
-                  onBlogPage || blogNavOpen
+                  onBlogRoute || blogNavOpen
                     ? "text-deep-purple"
                     : "text-dark-gray hover:text-deep-purple",
                 ].join(" ")}
@@ -200,16 +214,14 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/blog"
-                    aria-current={
-                      onBlogPage && !location.hash ? "page" : undefined
-                    }
+                    aria-current={onBlogIndex ? "page" : undefined}
                     onClick={() => {
                       setBlogNavOpen(false);
                       setMenuOpen(false);
                     }}
                     className={[
                       "block rounded-md px-3 py-2 text-sm transition-colors",
-                      onBlogPage && !location.hash
+                      onBlogIndex
                         ? "bg-deep-purple/10 text-deep-purple font-medium"
                         : "text-dark-gray hover:bg-light-gray hover:text-deep-purple",
                     ].join(" ")}
@@ -217,12 +229,12 @@ export default function Navbar() {
                     All posts
                   </Link>
                 </li>
-                {blogPosts.map((post) => (
+                {navPostLinks.map((post) => (
                   <li key={post.slug}>
                     <Link
-                      to={`/blog#${post.slug}`}
+                      to={`/blog/${post.slug}`}
                       aria-current={
-                        onBlogPage && location.hash === `#${post.slug}`
+                        location.pathname === `/blog/${post.slug}`
                           ? "page"
                           : undefined
                       }

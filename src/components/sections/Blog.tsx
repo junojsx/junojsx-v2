@@ -1,8 +1,22 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Clock } from "lucide-react";
-import { ALL_POSTS_QUERY } from "@/lib/queries";
+import { ArrowRight } from "lucide-react";
+import BlogCardArt from "@/components/blog/BlogCardArt";
+import { blogPosts, type BlogPost } from "@/data/blogPosts";
+import { useSanityPostList } from "@/hooks/useSanityPostList";
 import type { SanityPost } from "@/types";
+
+/** Pastel card faces — aligned with reference mockup */
+const CARD_BACKGROUNDS = [
+  "#E8F9EE",
+  "#F0F0F2",
+  "#CCF5F8",
+  "#FDE7F3",
+  "#D6EFFF",
+  "#FEF9E1",
+] as const;
+
+const PAGE_BG = "#EEF1F6";
+const TITLE_NAVY = "#162B4D";
 
 function formatPostDate(iso: string) {
   return new Intl.DateTimeFormat("en", {
@@ -12,158 +26,185 @@ function formatPostDate(iso: string) {
   }).format(new Date(iso));
 }
 
+type ListItem =
+  | { source: "sanity"; post: SanityPost }
+  | { source: "static"; post: BlogPost };
+
+function toCardItems(
+  loading: boolean,
+  error: boolean,
+  sanityPosts: SanityPost[],
+): ListItem[] {
+  if (loading) return [];
+  if (sanityPosts.length > 0) {
+    return sanityPosts.map((post) => ({ source: "sanity", post }));
+  }
+  if (error) {
+    return blogPosts.map((post) => ({ source: "static", post }));
+  }
+  return [];
+}
+
 type BlogProps = {
-  /** When true, the page title is an `h1` (use on `/blog` only). */
   standalone?: boolean;
 };
 
 export default function Blog({ standalone = false }: BlogProps) {
   const HeadingTag = standalone ? "h1" : "h2";
-  const [posts, setPosts] = useState<SanityPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const projectId = import.meta.env.VITE_SANITY_PROJECT_ID ?? 'n5l953ie';
-    const query = encodeURIComponent(ALL_POSTS_QUERY);
-    const url = `https://${projectId}.api.sanity.io/v2024-01-01/data/query/production?query=${query}`;
-
-    fetch(url)
-      .then((res) => res.json())
-      .then((json) => setPosts(json.result ?? []))
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, []);
+  const { posts: sanityPosts, loading, error } = useSanityPostList();
+  const items = toCardItems(loading, error, sanityPosts);
+  const showFallbackNote = error && !loading && items.length > 0;
 
   return (
     <section
       id="blog"
       aria-labelledby="blog-heading"
-      className="relative min-h-[calc(100vh-8rem)] overflow-hidden bg-[#FBF9F5] text-dark-gray"
+      className="relative min-h-[calc(100vh-8rem)] overflow-hidden text-dark-gray"
+      style={{ backgroundColor: PAGE_BG }}
     >
-      {/* Paper grain + corner wash — decorative */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 opacity-[0.4]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: "220px 220px",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")`,
+          backgroundSize: "200px 200px",
         }}
         aria-hidden="true"
       />
-      <div
-        className="pointer-events-none absolute -top-24 right-[-10%] h-72 w-72 rounded-full bg-soft-lavender/35 blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 left-[-15%] h-80 w-80 rounded-full bg-warm-gold/25 blur-3xl"
-        aria-hidden="true"
-      />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-20 sm:py-28">
-        <header className="max-w-2xl mb-14 sm:mb-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-deep-purple/80 mb-4">
-            Writing
-          </p>
+      <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
+        <header className="mb-12 sm:mb-14">
           <HeadingTag
             id="blog-heading"
-            className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-semibold text-deep-purple leading-[1.08] tracking-tight"
+            className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]"
+            style={{ color: TITLE_NAVY }}
           >
-            Notes on access, craft, and the quiet details.
+            Blog
           </HeadingTag>
-          <p className="mt-5 text-base sm:text-lg text-dark-gray/75 leading-relaxed">
-            Short essays and practical snippets — mostly about building
-            interfaces that feel intentional for every input modality.
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-[#3d4f6e]/85">
+            Essays on accessibility, front-end craft, and shipping interfaces
+            that work well for every input and assistive technology.
           </p>
         </header>
 
         {loading ? (
-          <ol className="space-y-6 sm:space-y-8 list-none p-0 m-0">
-            {[1, 2, 3].map((n) => (
-              <li key={n}>
-                <div className="rounded-2xl border border-dark-gray/10 bg-white/80 p-6 sm:p-8 animate-pulse">
-                  <div className="h-4 w-32 rounded bg-dark-gray/10 mb-4" />
-                  <div className="h-6 w-2/3 rounded bg-dark-gray/10 mb-3" />
-                  <div className="h-4 w-full rounded bg-dark-gray/10" />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-[22px] p-7 shadow-[0_4px_24px_rgba(22,43,77,0.06)]"
+                style={{
+                  backgroundColor: CARD_BACKGROUNDS[i % CARD_BACKGROUNDS.length],
+                }}
+              >
+                <div className="mb-4 flex justify-between gap-3">
+                  <div className="flex-1 space-y-2">
+                    <div className="h-5 w-2/3 rounded-lg bg-white/70" />
+                    <div className="h-3 w-24 rounded bg-white/60" />
+                  </div>
+                  <div className="h-10 w-10 shrink-0 rounded-full bg-white/80" />
                 </div>
-              </li>
+                <div className="space-y-2">
+                  <div className="h-3 w-full rounded bg-white/55" />
+                  <div className="h-3 w-5/6 rounded bg-white/55" />
+                  <div className="h-3 w-2/3 rounded bg-white/55" />
+                </div>
+                <div className="mt-8 h-24 rounded-xl bg-white/40" />
+              </div>
             ))}
-          </ol>
-        ) : error ? (
-          <p className="text-dark-gray/50 text-sm">
-            Couldn't load posts right now — try refreshing.
+          </div>
+        ) : items.length === 0 ? (
+          <p className="text-sm text-[#3d4f6e]/70">
+            No posts to show yet — check back soon.
           </p>
-        ) : posts.length === 0 ? (
-          <p className="text-dark-gray/50 text-sm">No posts yet. Check back soon.</p>
         ) : (
-          <ol className="space-y-6 sm:space-y-8 list-none p-0 m-0">
-            {posts.map((post, index) => (
-              <li key={post._id}>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+            {items.map((item, index) => {
+              const slug =
+                item.source === "sanity"
+                  ? item.post.slug.current
+                  : item.post.slug;
+              const title = item.post.title;
+              const summary =
+                item.source === "sanity"
+                  ? item.post.summary
+                  : item.post.excerpt;
+              const readMinutes =
+                item.source === "sanity"
+                  ? item.post.readMinutes
+                  : item.post.readMinutes;
+              const publishedAt =
+                item.source === "sanity"
+                  ? item.post.publishedAt
+                  : item.post.date;
+              const bg = CARD_BACKGROUNDS[index % CARD_BACKGROUNDS.length];
+
+              return (
                 <article
-                  id={post.slug.current}
+                  key={item.source === "sanity" ? item.post._id : item.post.slug}
                   className={[
-                    "group relative scroll-mt-28 rounded-2xl border border-dark-gray/10 bg-white/80 backdrop-blur-sm",
-                    "shadow-sm transition-shadow duration-300 hover:shadow-md",
+                    "group flex h-full flex-col rounded-[22px] p-6 shadow-[0_4px_24px_rgba(22,43,77,0.07)] transition-transform duration-300",
+                    "motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_32px_rgba(22,43,77,0.1)]",
                     "motion-safe:opacity-0 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-forwards",
                   ].join(" ")}
                   style={{
-                    animationDelay: `${80 + index * 90}ms`,
+                    backgroundColor: bg,
+                    animationDelay: `${60 + index * 75}ms`,
                   }}
                 >
                   <Link
-                    to={`/blog/${post.slug.current}`}
-                    className="flex flex-col gap-4 p-6 sm:p-8 rounded-2xl outline-none
-                               focus-visible:ring-2 focus-visible:ring-input-focus focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF9F5]"
-                    aria-label={`${post.title} — ${post.readMinutes} min read`}
+                    to={`/blog/${slug}`}
+                    className="flex min-h-[280px] flex-1 flex-col rounded-[18px] outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#EEF1F6]"
+                    aria-label={`Read article: ${title}`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-dark-gray/60">
-                      <time dateTime={post.publishedAt}>
-                        {formatPostDate(post.publishedAt)}
-                      </time>
-                      <span className="text-dark-gray/30" aria-hidden="true">
-                        ·
-                      </span>
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                        <span>{post.readMinutes} min read</span>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <h2
+                          className="text-lg font-bold leading-snug sm:text-xl"
+                          style={{ color: TITLE_NAVY }}
+                        >
+                          {title}
+                        </h2>
+                        <p
+                          className="mt-1 text-sm"
+                          style={{ color: "#3d4f6e99" }}
+                        >
+                          {readMinutes} min read
+                          <span className="mx-1.5 opacity-50" aria-hidden="true">
+                            ·
+                          </span>
+                          <time dateTime={publishedAt}>
+                            {formatPostDate(publishedAt)}
+                          </time>
+                        </p>
+                      </div>
+                      <span
+                        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#162B4D] shadow-sm transition-colors duration-300 group-hover:bg-[#162B4D] group-hover:text-white"
+                        aria-hidden="true"
+                      >
+                        <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                       </span>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-semibold text-deep-purple group-hover:text-soft-teal transition-colors">
-                          {post.title}
-                        </h3>
-                        <p className="mt-3 text-dark-gray/75 leading-relaxed">
-                          {post.summary}
-                        </p>
-                        {post.tags?.length > 0 && (
-                          <ul
-                            className="mt-4 flex flex-wrap gap-2"
-                            aria-label="Topics"
-                          >
-                            {post.tags.map((tag) => (
-                              <li key={tag}>
-                                <span className="inline-block rounded-full border border-deep-purple/15 bg-deep-purple/[0.06] px-3 py-1 text-xs font-medium text-deep-purple">
-                                  {tag}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                      <span
-                        className="inline-flex shrink-0 items-center justify-center rounded-full border border-dark-gray/15 bg-light-gray/50 p-2.5 text-deep-purple transition-colors group-hover:border-soft-teal/40 group-hover:bg-soft-teal/10 group-hover:text-soft-teal"
-                        aria-hidden="true"
-                      >
-                        <ArrowUpRight className="h-5 w-5" />
-                      </span>
-                    </div>
+                    <p
+                      className="mt-4 line-clamp-4 flex-1 text-sm leading-relaxed sm:text-[0.9375rem]"
+                      style={{ color: "#2b3f5ecc" }}
+                    >
+                      {summary}
+                    </p>
+
+                    <BlogCardArt variant={index} className="mt-5 w-full" />
                   </Link>
                 </article>
-              </li>
-            ))}
-          </ol>
+              );
+            })}
+          </div>
         )}
+
+        {showFallbackNote ? (
+          <p className="mt-8 text-xs text-[#3d4f6e]/60">
+            Live CMS feed unavailable — showing curated highlights instead.
+          </p>
+        ) : null}
       </div>
     </section>
   );
