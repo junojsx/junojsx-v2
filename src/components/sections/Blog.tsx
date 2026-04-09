@@ -144,12 +144,8 @@ export default function Blog({ standalone = false }: BlogProps) {
                   className={[
                     "group flex h-full flex-col rounded-[22px] p-6 shadow-[0_4px_24px_rgba(22,43,77,0.07)] transition-transform duration-300",
                     "motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_32px_rgba(22,43,77,0.1)]",
-                    "motion-safe:opacity-0 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-forwards",
                   ].join(" ")}
-                  style={{
-                    backgroundColor: bg,
-                    animationDelay: `${60 + index * 75}ms`,
-                  }}
+                  style={{ backgroundColor: bg }}
                 >
                   <Link
                     to={`/blog/${slug}`}
