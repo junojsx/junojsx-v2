@@ -15,29 +15,89 @@ export interface ComponentEntry {
 // ─── 1. Skip Navigation Link ────────────────────────────────────────────────
 
 function SkipNavPreview() {
+  const [skipFocused, setSkipFocused] = useState(false);
+
   return (
-    <div className="relative h-full flex flex-col items-center justify-center gap-4 p-4">
-      <p className="text-sm text-center text-[#2C2C2C]/70 max-w-xs">
-        Tab into the demo — the skip link appears on focus.
+    <div className="flex h-full flex-col items-center justify-center gap-3 p-4">
+      <p className="max-w-xs text-center text-xs text-[#2C2C2C]/70">
+        Tab into the demo — the skip link snaps in from off-screen on focus.
       </p>
-      <div className="w-full max-w-xs rounded-lg overflow-hidden border border-[#2C2C2C]/15 bg-[#F5F5F5]">
-        <div className="relative">
-          {/* Skip link — visible only on focus */}
-          <a
-            href="#skip-demo-main"
-            className="absolute left-2 top-2 z-10 -translate-y-full rounded bg-[#4E3C51] px-3 py-1.5 text-xs font-semibold text-white transition-transform focus:translate-y-0"
-          >
-            Skip to main content
-          </a>
-          <div className="flex gap-3 px-4 py-3 bg-white border-b border-[#2C2C2C]/10 text-xs text-[#2C2C2C]/50">
-            <span>Logo</span>
-            <span>Nav 1</span>
-            <span>Nav 2</span>
+
+      {/* Mini browser frame */}
+      <div className="w-full max-w-sm overflow-hidden rounded-lg border border-[#2C2C2C]/15 bg-white shadow-sm">
+        {/* Header with nav */}
+        <header style={{ backgroundColor: "#2f1b47", position: "relative" }}>
+          {/* Skip link — off-screen by default, snaps in on focus */}
+          <div id="skip">
+            <a
+              href="#skip-demo-content"
+              onFocus={() => setSkipFocused(true)}
+              onBlur={() => setSkipFocused(false)}
+              style={
+                skipFocused
+                  ? {
+                      position: "static",
+                      display: "inline-block",
+                      color: "#fff",
+                      background: "#7041af",
+                      padding: "6px 10px",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      textDecoration: "underline",
+                    }
+                  : {
+                      position: "absolute",
+                      left: "-10000px",
+                      top: "auto",
+                      width: "1px",
+                      height: "1px",
+                      overflow: "hidden",
+                      color: "#fff",
+                    }
+              }
+            >
+              Skip to main content &gt;&gt;&gt;
+            </a>
           </div>
-        </div>
-        <div id="skip-demo-main" className="px-4 py-6 text-xs text-[#2C2C2C]/60" tabIndex={-1}>
-          Main content area
-        </div>
+
+          <nav id="primary-nav" aria-label="Main">
+            <ul
+              style={{
+                listStyle: "none",
+                margin: 0,
+                padding: "10px 0",
+                textAlign: "center",
+                display: "flex",
+                justifyContent: "center",
+                gap: "14px",
+              }}
+            >
+              {["Introduction", "Tips", "Resources", "Contact"].map((label) => (
+                <li key={label}>
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    style={{ color: "#fff", fontSize: "11px", textDecoration: "none" }}
+                    className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#7041af] focus-visible:outline-offset-2 rounded-sm"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </header>
+
+        {/* Main content */}
+        <main id="skip-demo-content" tabIndex={-1} className="px-4 py-4 outline-none">
+          <h2 className="text-sm font-bold text-[#2f1b47]">Recipe for Programming</h2>
+          <h3 className="mt-1 text-xs font-semibold text-[#2C2C2C]/80">
+            Hello, my name is Justin.
+          </h3>
+          <p className="mt-1 text-[10px] leading-relaxed text-[#2C2C2C]/60">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit…
+          </p>
+        </main>
       </div>
     </div>
   );
