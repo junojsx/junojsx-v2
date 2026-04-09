@@ -745,38 +745,86 @@ export const accessibleComponents: ComponentEntry[] = [
     category: "navigation",
     tags: ["keyboard", "bypass-blocks", "WCAG 2.4.1"],
     Preview: SkipNavPreview,
-    code: `/* index.css */
-.skip-link {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 9999;
-  transform: translateY(-200%);
-  transition: transform 0.2s;
-  background: #4E3C51;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-.skip-link:focus {
-  transform: translateY(0);
+    code: `<!-- HTML -->
+<header>
+  <div id="skip">
+    <!-- Visually hidden until focused — then snaps into view -->
+    <a href="#content">Skip to main content &gt;&gt;&gt;</a>
+  </div>
+
+  <nav id="primary-nav" aria-label="Main">
+    <ul>
+      <li><a href="#introduction">Introduction</a></li>
+      <li><a href="#tips">Tips</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#contact-form">Contact Form</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- id="content" matches href="#content" on the skip link -->
+<main id="content">
+  <h2>Recipe for Programming</h2>
+  <section id="introduction">
+    <h3>Hello, my name is Justin.</h3>
+    <p>Lorem ipsum…</p>
+  </section>
+</main>
+
+/* CSS */
+:root {
+  --nav-color: #fff;
+  --main-link: #7041af;
+  --primary: #2f1b47;
 }
 
-// Layout.tsx
-export default function Layout() {
-  return (
-    <>
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-      <Navbar />
-      <main id="main-content" tabIndex={-1} className="outline-none">
-        <Outlet />
-      </main>
-    </>
-  );
+header {
+  background-color: var(--primary);
+}
+
+#primary-nav {
+  background-color: var(--primary);
+}
+
+#primary-nav ul {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+#primary-nav ul li {
+  display: inline;
+  padding: 5%;
+}
+
+#primary-nav ul li a {
+  color: var(--nav-color);
+  font-size: large;
+}
+
+/* Focus/hover indicator on nav links */
+#primary-nav ul li a:focus,
+#primary-nav ul li a:hover {
+  outline: 2px solid var(--main-link);
+  border-radius: 5px;
+}
+
+/* Skip link — off-screen by default */
+#skip a {
+  position: absolute;
+  color: #fff;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Becomes visible when focused by keyboard */
+#skip a:focus {
+  position: static;
+  height: auto;
+  width: auto;
 }`,
   },
   {
