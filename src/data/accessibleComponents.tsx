@@ -734,6 +734,131 @@ function ToggletipPreview() {
   );
 }
 
+// ─── 11. Accessible Flip Card ────────────────────────────────────────────────
+
+function FlipCardPreview() {
+  const [flipped, setFlipped] = useState(false);
+
+  function toggle() {
+    setFlipped((v) => !v);
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full gap-4 py-6"
+      style={{ perspective: "1000px" }}>
+
+      {/* Screen-reader instruction — visually hidden */}
+      <span id="flip-desc-preview" className="sr-only">
+        This is a flip card. Activated by pressing Enter or Space.
+      </span>
+
+      <div
+        role="button"
+        aria-pressed={flipped}
+        aria-describedby="flip-desc-preview"
+        tabIndex={0}
+        onClick={toggle}
+        onKeyDown={(e) => {
+          if ((e.code === "Enter" || e.code === "Space") && !e.repeat) {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+        style={{
+          width: "210px",
+          height: "280px",
+          position: "relative",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.6s cubic-bezier(0.4,0.2,0.2,1)",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          cursor: "pointer",
+          outline: "none",
+          borderRadius: "16px",
+        }}
+        className="focus-visible:ring-4 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+      >
+        {/* Front */}
+        <div
+          aria-hidden={flipped}
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            borderRadius: "16px",
+            background: "linear-gradient(135deg, #4E3C51 0%, #7c5c8a 100%)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "12px",
+            boxShadow: "0 8px 32px rgba(78,60,81,0.35)",
+            color: "#fff",
+          }}
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth={1.5} style={{ width: "40px", opacity: 0.8 }}>
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <path d="M12 8v8M8 12h8" />
+          </svg>
+          <span style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "0.02em" }}>
+            Front Content
+          </span>
+          <span style={{ fontSize: "0.72rem", opacity: 0.65 }}>
+            Press Enter or Space to flip
+          </span>
+        </div>
+
+        {/* Back */}
+        <div
+          aria-hidden={!flipped}
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            borderRadius: "16px",
+            background: "linear-gradient(135deg, #1A7A74 0%, #2aada5 100%)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "14px",
+            boxShadow: "0 8px 32px rgba(26,122,116,0.35)",
+            color: "#fff",
+            padding: "24px",
+          }}
+        >
+          <p style={{ fontSize: "0.9rem", textAlign: "center", lineHeight: 1.6 }}>
+            Back with Small Content
+          </p>
+          <a
+            href="#"
+            tabIndex={flipped ? 0 : -1}
+            onClick={(e) => e.preventDefault()}
+            style={{
+              color: "#ccff7d",
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+            }}
+            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ccff7d] focus-visible:outline-offset-2 rounded"
+          >
+            Homepage
+          </a>
+        </div>
+      </div>
+
+      <p style={{ fontSize: "0.7rem", color: "#6b7280", textAlign: "center" }}>
+        <code style={{ color: "#4E3C51" }}>aria-pressed="{String(flipped)}"</code>
+        {" · "}back link tabIndex: <code style={{ color: "#4E3C51" }}>{flipped ? 0 : -1}</code>
+      </p>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -1412,6 +1537,150 @@ btn.addEventListener("click", toggleToggletip);
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" || e.key === "Control") {
     hideToggletip();
+  }
+});`,
+  },
+  {
+    id: "flip-card",
+    name: "Accessible Flip Card",
+    description:
+      "A 3D flip card using role=\"button\" and aria-pressed to communicate state. The back-side link is removed from the tab order with tabindex=\"-1\" when hidden, and restored when flipped.",
+    category: "disclosure",
+    tags: ["aria-pressed", "tabindex", "flip-card"],
+    Preview: FlipCardPreview,
+    code: `<!-- HTML -->
+<!-- role="button" + aria-pressed replaces a native checkbox for a
+     custom toggle. aria-describedby points to the sr-only instruction. -->
+<div
+  class="flip-card"
+  role="button"
+  aria-pressed="false"
+  tabindex="0"
+  aria-describedby="flip-desc"
+>
+  <div class="flip-card-inner">
+    <div class="flip-card-front" id="front" aria-hidden="false">
+      Front Content
+    </div>
+
+    <div class="flip-card-back" aria-hidden="true" id="back">
+      <p>Back with Small Content</p>
+      <!-- tabindex="-1" removes this from tab order while hidden -->
+      <a href="#" tabindex="-1" id="linkRemove">Homepage</a>
+    </div>
+  </div>
+</div>
+
+<!-- Visually hidden instruction for screen readers -->
+<span class="sr-only" id="flip-desc">
+  This is a flip card. Activated by pressing Enter or Space.
+</span>
+
+/* CSS */
+.flip-card {
+  perspective: 1000px;
+  width: 220px;
+  height: 300px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+.flip-card:focus-visible {
+  outline: 3px solid #A288BF;
+  outline-offset: 4px;
+}
+
+.flip-card[aria-pressed="true"] .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-inner {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: 16px;
+}
+
+.flip-card-front,
+.flip-card-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: bold;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.flip-card-front {
+  background: linear-gradient(135deg, #4E3C51, #7c5c8a);
+  color: #fff;
+}
+
+.flip-card-back {
+  background: linear-gradient(135deg, #1A7A74, #2aada5);
+  color: #fff;
+  transform: rotateY(180deg);
+  padding: 24px;
+  text-align: center;
+}
+
+.flip-card-back a {
+  color: #ccff7d;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.flip-card-back a:focus-visible {
+  outline: 2px solid #ccff7d;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+// JavaScript
+document.addEventListener('DOMContentLoaded', function () {
+  const flipCards = document.querySelectorAll('.flip-card');
+
+  flipCards.forEach(function (card) {
+    card.addEventListener('click', () => toggle(card));
+
+    card.addEventListener('keydown', function (e) {
+      if ((e.code === 'Enter' || e.code === 'Space') && !e.repeat) {
+        e.preventDefault();
+        toggle(card);
+      }
+    });
+  });
+
+  function toggle(card) {
+    const isPressed = card.getAttribute('aria-pressed') === 'true';
+    const flipped = !isPressed;
+
+    // Update toggle state
+    card.setAttribute('aria-pressed', String(flipped));
+
+    // Swap aria-hidden so SR only reads the visible face
+    document.getElementById('front').setAttribute('aria-hidden', String(flipped));
+    document.getElementById('back').setAttribute('aria-hidden', String(!flipped));
+
+    // Move the back-side link in/out of tab order
+    const link = document.getElementById('linkRemove');
+    link.setAttribute('tabindex', flipped ? '0' : '-1');
   }
 });`,
   },
