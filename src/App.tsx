@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import HomePage from "@/pages/HomePage";
 import BlogPage from "@/pages/BlogPage";
 import BlogPostPage from "@/pages/BlogPostPage";
+import ComponentsPage from "@/pages/ComponentsPage";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/:slug" element={<BlogPostPage />} />
+          <Route path="components" element={<ComponentsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

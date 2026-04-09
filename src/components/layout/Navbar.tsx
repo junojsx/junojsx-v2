@@ -252,6 +252,27 @@ export default function Navbar() {
             </div>
           </li>
 
+          <li>
+            <Link
+              to="/components"
+              aria-current={
+                location.pathname === "/components" ? "page" : undefined
+              }
+              onClick={() => {
+                setMenuOpen(false);
+                setBlogNavOpen(false);
+              }}
+              className={[
+                "block px-3 py-2 rounded text-sm font-medium transition-colors",
+                location.pathname === "/components"
+                  ? "text-deep-purple"
+                  : "text-dark-gray hover:text-deep-purple",
+              ].join(" ")}
+            >
+              Components
+            </Link>
+          </li>
+
           {navLinksAfterBlog.map((link) => (
             <li key={link.href}>
               <Link
