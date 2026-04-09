@@ -370,6 +370,53 @@ function LiveRegionPreview() {
   );
 }
 
+// ─── 7. Descriptive "Read More" Link ─────────────────────────────────────────
+
+function DescriptiveLinkPreview() {
+  return (
+    <div className="flex items-center justify-center h-full p-6">
+      <div
+        style={{
+          width: "260px",
+          padding: "20px",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+          backgroundColor: "#f9f9f9",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ fontSize: "0.9rem", marginBottom: "10px", color: "#162B4D" }}>
+          This Justin's story about why she likes dogs more.
+        </h2>
+        <img
+          src="https://placekitten.com/200/140"
+          alt="A kitten"
+          style={{ width: "100%", borderRadius: "5px", marginBottom: "10px" }}
+        />
+        <p style={{ fontSize: "0.8rem", color: "#2C2C2C", marginBottom: "8px" }}>
+          Justin likes doggies more than cats. When she was a kid, her uncle caught a
+          rabid kitty and chased her down with it.{" "}
+          <a
+            href="https://example.com"
+            aria-describedby="dogStory1-preview"
+            style={{ color: "#1A7A74", textDecoration: "underline" }}
+          >
+            READ MORE &gt;&gt;
+          </a>
+          .
+        </p>
+        {/* visually hidden but readable by screen readers */}
+        <p
+          id="dogStory1-preview"
+          style={{ visibility: "hidden", position: "absolute" }}
+        >
+          Read more about Justin's story about why she likes dogs more than cats.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -649,6 +696,66 @@ function Modal({ open, onClose, title, children }) {
       </div>
     </>
   );
+}`,
+  },
+  {
+    id: "descriptive-read-more",
+    name: "Descriptive \"Read More\" Link",
+    description:
+      "Ambiguous link text like \"Read More\" is meaningless out of context. aria-describedby points to a visually hidden element that provides the full description to screen readers.",
+    category: "navigation",
+    tags: ["aria-describedby", "link-text", "WCAG 2.4.6"],
+    Preview: DescriptiveLinkPreview,
+    code: `<!-- HTML -->
+<div class="card">
+  <h2>Justin's story about why she likes dogs more.</h2>
+  <img src="dog.jpg" alt="Justin's dog Biscuit sitting in the yard" />
+  <p>
+    Justin likes doggies more than cats. When she was a kid, her uncle
+    caught a rabid kitty and chased her down with it.
+
+    <!-- aria-describedby references the hidden <p> below,
+         giving screen readers the full link purpose -->
+    <a href="https://example.com" aria-describedby="dogStory1">
+      READ MORE &gt;&gt;
+    </a>.
+  </p>
+
+  <!-- Visually hidden, but read aloud by screen readers
+       when the link above receives focus -->
+  <p id="dogStory1" style="visibility: hidden;">
+    Read more about Justin's story about why she likes dogs more than cats.
+  </p>
+</div>
+
+/* CSS */
+.card {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.card a {
+  display: block;
+  margin-top: 5%;
+  text-decoration: underline;
+  color: #005fcc; /* avoid using color names like "blue" */
+}
+
+.card a:hover {
+  color: #007BFF;
+}
+
+#dogStory1 {
+  visibility: hidden; /* hidden visually, still in accessibility tree */
 }`,
   },
 ];
