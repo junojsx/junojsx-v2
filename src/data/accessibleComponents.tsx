@@ -621,6 +621,119 @@ function ProgressBarPreview() {
   );
 }
 
+// ─── 10. Third-Party Disclaimer Toggletip ────────────────────────────────────
+
+const DISCLAIMER_TEXT =
+  "Please note that while we make every effort to ensure our own content is accessible, some pages on WEBSITE NAME may contain third-party content or links to third-party websites that are not fully accessible. We strive to work with our third-party providers to encourage improvements. Contact us at ###-###-#### for more assistance.";
+
+function ToggletipPreview() {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" || e.key === "Control") {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  return (
+    <div className="flex flex-col justify-center h-full px-6 py-5 gap-4" style={{ fontFamily: "Arial, sans-serif" }}>
+      {/* Trigger row */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", position: "relative" }}>
+        <button
+          ref={btnRef}
+          id="preview-toggleBtn"
+          type="button"
+          aria-describedby="preview-toggletip-content"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          style={{
+            border: "1px solid #4E3C51",
+            borderRadius: "100%",
+            width: "22px",
+            height: "22px",
+            padding: 0,
+            cursor: "pointer",
+            background: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            outline: "none",
+          }}
+          className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A288BF]"
+        >
+          <img
+            src="https://www.html5accessibility.com/tests/i.png"
+            width="11"
+            alt="information tooltip"
+          />
+        </button>
+
+        <h2 style={{ fontSize: "0.85rem", fontWeight: 600, color: "#162B4D", margin: 0 }}>
+          Third-Party Disclaimer
+        </h2>
+
+        {/* Toggletip content — only rendered when open, so only then in tab order */}
+        <aside
+          id="preview-toggletip-content"
+          style={{
+            display: open ? "block" : "none",
+            position: "absolute",
+            top: "28px",
+            left: 0,
+            zIndex: 99,
+            background: "#eee",
+            border: "1px solid #ccc",
+            padding: "10px",
+            borderRadius: "8px",
+            boxShadow: "0 5px 10px rgba(0,0,0,0.2)",
+            fontSize: "0.75rem",
+            width: "240px",
+            lineHeight: 1.5,
+          }}
+        >
+          {open && (
+            <span role="group" aria-live="polite">
+              {DISCLAIMER_TEXT}{" "}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                style={{
+                  display: "inline",
+                  border: "none",
+                  background: "none",
+                  color: "#4E3C51",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  padding: 0,
+                  fontSize: "0.75rem",
+                  textDecoration: "underline",
+                }}
+              >
+                Close
+              </button>
+            </span>
+          )}
+        </aside>
+      </div>
+
+      {/* Key notes */}
+      <dl style={{ fontSize: "0.72rem", color: "#555", lineHeight: 1.6 }}>
+        <dt style={{ fontWeight: 700, color: "#162B4D" }}>Key patterns:</dt>
+        <dd>• Content injected into DOM only when expanded → only then readable/focusable</dd>
+        <dd>• <code>aria-expanded</code> communicates open/closed state</dd>
+        <dd>• <code>aria-live="polite"</code> announces content on expand</dd>
+        <dd>• Escape / Ctrl dismiss without toggling back open</dd>
+      </dl>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -1159,6 +1272,100 @@ function nextStep() {
     progressContainer.setAttribute('aria-valuenow', currentStep);
   }
 }`,
+  },
+  {
+    id: "toggletip",
+    name: "Third-Party Disclaimer Toggletip",
+    description:
+      "A toggletip that injects disclaimer content into the DOM only when expanded — keeping it out of the tab order when hidden. Uses aria-expanded, aria-describedby, and aria-live for full screen reader support.",
+    category: "disclosure",
+    tags: ["aria-expanded", "aria-live", "toggletip", "WCAG 1.4.13"],
+    Preview: ToggletipPreview,
+    code: `<!-- HTML -->
+<!-- aria-describedby links the button to the aside.
+     aria-expanded communicates open/closed state.
+     Content is injected via JS only when open — so it's only
+     in the tab order when the toggletip is expanded. -->
+<button
+  id="toggleBtn"
+  aria-describedby="content"
+  aria-expanded="false"
+>
+  <img src="i.png" width="15" alt="information tooltip" />
+</button>
+
+<aside id="content">
+  <!-- Empty until opened — injected by JS below -->
+</aside>
+
+/* CSS */
+button {
+  border: 1px solid black;
+  border-radius: 100%;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px solid black;
+  outline-offset: 3px;
+}
+
+#content {
+  display: none;
+  position: absolute;
+  z-index: 99;
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  font-size: 0.8em;
+}
+
+// JavaScript
+const btn = document.getElementById("toggleBtn");
+const content = document.getElementById("content");
+
+function showToggletip() {
+  btn.setAttribute("aria-expanded", "true");
+
+  // Inject content only on open — aria-live announces it to screen readers.
+  // When closed, the empty aside is ignored by assistive tech.
+  content.innerHTML = \`
+    <span role="group" aria-live="polite">
+      Please note that while we make every effort to ensure our own
+      content is accessible, some pages on
+      <a href="#">WEBSITE NAME HERE</a>
+      may contain third-party content that is not fully accessible.
+      Contact us at ###-###-#### for more assistance.
+    </span>
+  \`;
+  content.style.display = "block";
+}
+
+function hideToggletip() {
+  btn.setAttribute("aria-expanded", "false");
+  content.innerHTML = "";
+  content.style.display = "none";
+}
+
+function toggleToggletip() {
+  const isHidden =
+    window.getComputedStyle(content).getPropertyValue("display") === "none";
+  isHidden ? showToggletip() : hideToggletip();
+}
+
+btn.addEventListener("click", toggleToggletip);
+
+// Escape and Ctrl dismiss only — they do not re-open
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" || e.key === "Control") {
+    hideToggletip();
+  }
+});`,
   },
 ];
 
