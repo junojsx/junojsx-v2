@@ -370,6 +370,63 @@ function LiveRegionPreview() {
   );
 }
 
+// ─── 7. Floating Label Input ─────────────────────────────────────────────────
+
+function FloatingLabelPreview() {
+  const [value, setValue] = useState("");
+  const [focused, setFocused] = useState(false);
+  const floated = focused || value.length > 0;
+
+  return (
+    <div
+      className="flex items-center justify-center h-full"
+      style={{ backgroundColor: "#060b23", padding: "2rem" }}
+    >
+      <div style={{ position: "relative", width: "280px" }}>
+        <input
+          type="text"
+          id="preview-floating-email"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          spellCheck={false}
+          style={{
+            width: "100%",
+            height: "56px",
+            borderRadius: "6px",
+            fontSize: "16px",
+            padding: "0 15px",
+            border: `2px solid ${focused ? "#18ffff" : "#fff"}`,
+            background: "transparent",
+            color: "#fff",
+            outline: "none",
+            transition: "border-color 0.3s",
+          }}
+        />
+        <label
+          htmlFor="preview-floating-email"
+          style={{
+            position: "absolute",
+            top: floated ? "0" : "50%",
+            left: "15px",
+            transform: floated ? "translateY(-50%)" : "translateY(-50%)",
+            color: focused ? "#18ffff" : "#fff",
+            fontSize: floated ? "13px" : "17px",
+            padding: floated ? "0 2px" : "0",
+            background: floated ? "#060b23" : "transparent",
+            transition: "top 0.3s, font-size 0.3s, color 0.3s",
+            pointerEvents: "none",
+            lineHeight: 1,
+          }}
+        >
+          Enter email
+        </label>
+      </div>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -649,6 +706,82 @@ function Modal({ open, onClose, title, children }) {
       </div>
     </>
   );
+}`,
+  },
+  {
+    id: "floating-label",
+    name: "Floating Label Input",
+    description:
+      "A real <label> that animates above the field on focus or when filled — unlike placeholder text, it stays visible and maintains its programmatic association with the input.",
+    category: "forms",
+    tags: ["floating-label", "CSS", "label"],
+    Preview: FloatingLabelPreview,
+    code: `<!-- HTML -->
+<!-- Uses a real <label> with for="email", NOT placeholder.
+     The label stays visible after the user types — placeholder disappears. -->
+<div class="input-field">
+  <input type="text" id="email" required spellcheck="false">
+  <label for="email">Enter email</label>
+</div>
+
+/* CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #060b23;
+}
+
+.input-field {
+  position: relative;
+}
+
+.input-field input {
+  width: 350px;
+  height: 60px;
+  border-radius: 6px;
+  font-size: 18px;
+  padding: 0 15px;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+  outline: none;
+}
+
+/* Float the label up on focus or when the input has a valid value.
+   :valid works here because the input has the required attribute —
+   a non-empty required field is considered valid. */
+.input-field label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 19px;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+input:focus {
+  border: 2px solid #18ffff;
+}
+
+input:focus ~ label,
+input:valid ~ label {
+  top: 0;
+  left: 15px;
+  font-size: 16px;
+  padding: 0 2px;
+  /* background matches page bg to "cut out" the border behind the label */
+  background: #060b23;
 }`,
   },
 ];
