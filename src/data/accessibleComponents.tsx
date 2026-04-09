@@ -427,6 +427,96 @@ function FloatingLabelPreview() {
   );
 }
 
+// ─── 8. Accessible Name Comparison ──────────────────────────────────────────
+
+function AccessibleNamePreview() {
+  const [ariaLabelText, setAriaLabelText] = useState<"cat" | "dog">("cat");
+  const [liveText, setLiveText] = useState<"cat" | "dog">("cat");
+  const [selfRefText, setSelfRefText] = useState<"cat" | "dog">("cat");
+
+  const toggle = (val: "cat" | "dog"): "cat" | "dog" => val === "cat" ? "dog" : "cat";
+
+  const sectionStyle: React.CSSProperties = {
+    marginBottom: "1rem",
+  };
+  const headingStyle: React.CSSProperties = {
+    fontSize: "0.7rem",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    color: "#B6A5D0",
+    marginBottom: "0.4rem",
+  };
+  const btnStyle: React.CSSProperties = {
+    padding: "0.4rem 1.2rem",
+    borderRadius: "6px",
+    border: "2px solid #4E3C51",
+    background: "#1e1828",
+    color: "#fff",
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    cursor: "pointer",
+    transition: "background 0.2s, border-color 0.2s",
+    outline: "none",
+  };
+
+  return (
+    <div
+      className="flex flex-col justify-center h-full px-6 py-5"
+      style={{ background: "#13101f" }}
+    >
+      <div style={sectionStyle}>
+        <p style={headingStyle}>aria-label (overrides text content)</p>
+        <button
+          aria-label={ariaLabelText}
+          style={btnStyle}
+          onClick={() => setAriaLabelText(toggle(ariaLabelText))}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#B6A5D0"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#4E3C51"; }}
+        >
+          {ariaLabelText}
+        </button>
+        <p style={{ fontSize: "0.7rem", color: "#6b7280", marginTop: "0.3rem" }}>
+          Accessible name: "{ariaLabelText}" — from <code style={{ color: "#B6A5D0" }}>aria-label</code>
+        </p>
+      </div>
+
+      <div style={sectionStyle}>
+        <p style={headingStyle}>aria-live (announces text changes)</p>
+        <button
+          aria-live="polite"
+          style={btnStyle}
+          onClick={() => setLiveText(toggle(liveText))}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#B6A5D0"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#4E3C51"; }}
+        >
+          {liveText}
+        </button>
+        <p style={{ fontSize: "0.7rem", color: "#6b7280", marginTop: "0.3rem" }}>
+          Accessible name: "{liveText}" — from text content; change is announced
+        </p>
+      </div>
+
+      <div style={{ ...sectionStyle, marginBottom: 0 }}>
+        <p style={headingStyle}>aria-labelledby targeting itself</p>
+        <button
+          id="self-ref-btn"
+          aria-labelledby="self-ref-btn"
+          style={btnStyle}
+          onClick={() => setSelfRefText(toggle(selfRefText))}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#B6A5D0"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#4E3C51"; }}
+        >
+          {selfRefText}
+        </button>
+        <p style={{ fontSize: "0.7rem", color: "#6b7280", marginTop: "0.3rem" }}>
+          Accessible name: "{selfRefText}" — from its own text via <code style={{ color: "#B6A5D0" }}>aria-labelledby</code>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -782,6 +872,82 @@ input:valid ~ label {
   padding: 0 2px;
   /* background matches page bg to "cut out" the border behind the label */
   background: #060b23;
+}`,
+  },
+  {
+    id: "accessible-name-comparison",
+    name: "Accessible Name: Three Techniques",
+    description:
+      "Compares aria-label, aria-live, and aria-labelledby (self-referencing) on buttons that toggle their text — showing how each technique affects what a screen reader announces.",
+    category: "forms",
+    tags: ["aria-label", "aria-live", "aria-labelledby"],
+    Preview: AccessibleNamePreview,
+    code: `<!-- HTML -->
+<!-- Click each button — it toggles between "cat" and "dog".
+     Each uses a different ARIA technique for the accessible name. -->
+
+<!-- 1. aria-label: overrides the accessible name entirely.
+        Must be updated manually in JS when text changes. -->
+<h2>Labelled by aria-label</h2>
+<button aria-label="cat">cat</button>
+
+<!-- 2. aria-live: accessible name comes from text content (default).
+        aria-live="polite" additionally announces the text change
+        to screen readers as a live region update. -->
+<h2>Labelled by contents + aria-live</h2>
+<button aria-live="polite">cat</button>
+
+<!-- 3. aria-labelledby pointing at itself: explicitly derives the
+        accessible name from the element's own text content.
+        Updates automatically when text changes — no JS needed. -->
+<h2>Labelled by aria-labelledby (self)</h2>
+<button id="ex" aria-labelledby="ex">cat</button>
+
+/* CSS */
+h2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #B6A5D0;
+  margin: 1.25rem 0 0.4rem;
+}
+
+button {
+  padding: 0.4rem 1.2rem;
+  border-radius: 6px;
+  border: 2px solid #4E3C51;
+  background: #1e1828;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+button:hover {
+  border-color: #B6A5D0;
+}
+
+/* Never suppress focus — keep visible for keyboard users */
+button:focus-visible {
+  outline: 3px solid #B6A5D0;
+  outline-offset: 3px;
+}
+
+// JavaScript
+for (let btn of document.querySelectorAll('button')) {
+  btn.addEventListener('click', () => {
+    const newText = btn.textContent === 'cat' ? 'dog' : 'cat';
+
+    // Only update aria-label if the button uses one —
+    // otherwise the accessible name drifts out of sync with the text
+    if (btn.hasAttribute('aria-label')) {
+      btn.setAttribute('aria-label', newText);
+    }
+
+    btn.textContent = newText;
+  });
 }`,
   },
 ];
