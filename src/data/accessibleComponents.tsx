@@ -517,6 +517,110 @@ function AccessibleNamePreview() {
   );
 }
 
+// ─── 9. Accessible Progress Bar ──────────────────────────────────────────────
+
+const SHIPPING_STEPS = ["Order Placed", "Processing", "Shipped", "Delivered"];
+
+function ProgressBarPreview() {
+  const [currentStep, setCurrentStep] = useState(1);
+
+  function nextStep() {
+    setCurrentStep((s) => Math.min(s + 1, SHIPPING_STEPS.length));
+  }
+
+  const pct = Math.round((currentStep / SHIPPING_STEPS.length) * 100);
+
+  return (
+    <div className="flex flex-col justify-center h-full px-5 py-6" style={{ fontFamily: "Arial, sans-serif" }}>
+      {/* Progress bar */}
+      <div
+        role="progressbar"
+        aria-valuenow={currentStep}
+        aria-valuemin={0}
+        aria-valuemax={SHIPPING_STEPS.length}
+        aria-label="Shipping Progress"
+        style={{
+          width: "100%",
+          backgroundColor: "#e0e0e0",
+          borderRadius: "5px",
+          marginBottom: "14px",
+          height: "18px",
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            height: "100%",
+            backgroundColor: "#4caf50",
+            width: `${pct}%`,
+            borderRadius: "5px",
+            transition: "width 0.3s ease",
+          }}
+        />
+      </div>
+
+      {/* Steps */}
+      <ul
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          listStyle: "none",
+          padding: 0,
+          margin: "0 0 16px",
+          gap: "6px",
+        }}
+      >
+        {SHIPPING_STEPS.map((label, i) => {
+          const done = i < currentStep;
+          const active = i === currentStep - 1;
+          return (
+            <li
+              key={label}
+              aria-current={active ? "step" : undefined}
+              style={{
+                flex: 1,
+                textAlign: "center",
+                padding: "8px 4px",
+                borderRadius: "5px",
+                fontSize: "0.72rem",
+                fontWeight: done ? 600 : 400,
+                backgroundColor: done ? "#4caf50" : "#f0f0f0",
+                color: done ? "#fff" : "#333",
+                transition: "background-color 0.3s",
+              }}
+            >
+              {label}
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Button */}
+      <button
+        type="button"
+        onClick={nextStep}
+        disabled={currentStep >= SHIPPING_STEPS.length}
+        style={{
+          alignSelf: "flex-start",
+          padding: "0.45rem 1.1rem",
+          borderRadius: "6px",
+          border: "none",
+          backgroundColor: currentStep >= SHIPPING_STEPS.length ? "#ccc" : "#4E3C51",
+          color: "#fff",
+          fontSize: "0.8rem",
+          fontWeight: 600,
+          cursor: currentStep >= SHIPPING_STEPS.length ? "default" : "pointer",
+          outline: "none",
+          transition: "background-color 0.2s",
+        }}
+        className="focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+      >
+        {currentStep >= SHIPPING_STEPS.length ? "Delivered!" : "Next Step"}
+      </button>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -948,6 +1052,112 @@ for (let btn of document.querySelectorAll('button')) {
 
     btn.textContent = newText;
   });
+}`,
+  },
+  {
+    id: "progress-bar",
+    name: "Accessible Progress Bar",
+    description:
+      "A shipping progress tracker using role=\"progressbar\" with aria-valuenow, aria-valuemin, and aria-valuemax — updated via JS so screen readers announce the current step.",
+    category: "feedback",
+    tags: ["role=progressbar", "aria-valuenow", "aria-current"],
+    Preview: ProgressBarPreview,
+    code: `<!-- HTML -->
+<div
+  class="progress-container"
+  role="progressbar"
+  aria-valuenow="1"
+  aria-valuemin="0"
+  aria-valuemax="4"
+  aria-label="Shipping Progress"
+>
+  <div class="progress-bar" id="progress-bar"></div>
+</div>
+
+<ul class="shipping-steps">
+  <!-- aria-current="step" marks the active step for screen readers -->
+  <li class="step completed" aria-current="step">Order Placed</li>
+  <li class="step">Processing</li>
+  <li class="step">Shipped</li>
+  <li class="step">Delivered</li>
+</ul>
+
+<button onclick="nextStep()">Next Step</button>
+
+/* CSS */
+.progress-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  height: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  width: 0;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.shipping-steps {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  padding: 0;
+  gap: 8px;
+}
+
+.shipping-steps .step {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.shipping-steps .step.completed {
+  background-color: #4caf50;
+  color: white;
+}
+
+button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: #4E3C51;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 3px solid #A288BF;
+  outline-offset: 3px;
+}
+
+// JavaScript
+let currentStep = 1;
+
+function nextStep() {
+  const steps = document.querySelectorAll('.shipping-steps .step');
+  const progressBar = document.getElementById('progress-bar');
+  const progressContainer = document.querySelector('.progress-container');
+
+  if (currentStep < steps.length) {
+    // Remove aria-current from previous step
+    steps[currentStep - 1].removeAttribute('aria-current');
+
+    steps[currentStep].classList.add('completed');
+    steps[currentStep].setAttribute('aria-current', 'step');
+    currentStep++;
+
+    progressBar.style.width = \`\${(currentStep / steps.length) * 100}%\`;
+
+    // Update aria-valuenow so screen readers announce the new value
+    progressContainer.setAttribute('aria-valuenow', currentStep);
+  }
 }`,
   },
 ];
