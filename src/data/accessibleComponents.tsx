@@ -372,6 +372,7 @@ function LiveRegionPreview() {
 
 // ─── 7. Descriptive "Read More" Link ─────────────────────────────────────────
 
+
 function DescriptiveLinkPreview() {
   return (
     <div className="flex items-center justify-center h-full p-6">
@@ -412,6 +413,54 @@ function DescriptiveLinkPreview() {
         >
           Read more about Justin's story about why she likes dogs more than cats.
         </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── 8. Whole-Card Link ───────────────────────────────────────────────────────
+
+function WcagCardPreview() {
+  return (
+    <div className="flex items-center justify-center h-full p-6">
+      <div
+        style={{
+          width: "260px",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+          backgroundColor: "#f9f9f9",
+          textAlign: "center",
+          cursor: "pointer",
+          transition: "background-color 0.3s",
+          overflow: "hidden",
+        }}
+      >
+        <a
+          href="https://example.com"
+          style={{ textDecoration: "none", color: "#333", display: "block", padding: "20px" }}
+          onClick={(e) => e.preventDefault()}
+        >
+          <img
+            src="https://www.horlix.com/wp-content/uploads/2023/03/what-is-WCAG-website-image.png"
+            alt="What is WCAG? Understanding Accessibility Guidelines"
+            style={{ width: "100%", borderRadius: "5px", marginBottom: "10px" }}
+          />
+          <h2 style={{ fontSize: "0.95rem", marginBottom: "8px", color: "#162B4D" }}>
+            Understanding WCAG
+          </h2>
+          <p
+            style={{
+              fontSize: "0.78rem",
+              color: "#2C2C2C",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            WCAG ensures online content is accessible to people with disabilities…{" "}
+            <span style={{ color: "#1A7A74" }}>Read More</span>.
+          </p>
+        </a>
       </div>
     </div>
   );
@@ -756,6 +805,80 @@ function Modal({ open, onClose, title, children }) {
 
 #dogStory1 {
   visibility: hidden; /* hidden visually, still in accessibility tree */
+}`,
+  },
+  {
+    id: "whole-card-link",
+    name: "Whole-Card Link",
+    description:
+      "Wrapping an entire card in <a> makes the heading, image alt text, and body all part of the link label — giving screen readers rich context with no extra ARIA needed.",
+    category: "navigation",
+    tags: ["card-link", "link-text", "WCAG 2.4.4"],
+    Preview: WcagCardPreview,
+    code: `<!-- HTML -->
+<!-- Wrapping the whole card in <a> means screen readers announce
+     the heading + image alt as the link name automatically.
+     Remove redundant "Read More" span — the heading already names
+     the destination. -->
+<div class="card">
+  <a href="https://example.com">
+    <h2>Understanding WCAG</h2>
+    <img
+      src="wcag-image.png"
+      alt="What is WCAG? Understanding Accessibility Guidelines"
+    />
+    <p>
+      WCAG ensures online content is accessible to people with
+      disabilities by emphasizing four key principles: Perceivable,
+      Operable, Understandable, and Robust (POUR).
+    </p>
+  </a>
+</div>
+
+/* CSS */
+.card {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.card:hover {
+  background-color: #e0e0e0;
+}
+
+/* The <a> wraps block content, so make it block-level */
+.card a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+.card a:hover {
+  color: #007BFF;
+}
+
+/* Visible focus style — never remove :focus-visible */
+.card a:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+/* Truncate long text to one line */
+.text-flow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }`,
   },
 ];
