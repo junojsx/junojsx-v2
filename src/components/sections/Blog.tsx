@@ -149,7 +149,7 @@ export default function Blog({ standalone = false }: BlogProps) {
                 >
                   <Link
                     to={`/blog/${slug}`}
-                    className="flex min-h-[280px] flex-1 flex-col rounded-[18px] outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#EEF1F6]"
+                    className="flex min-h-[280px] flex-1 flex-col rounded-[18px] outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2 focus-visible:ring-offset-[#EEF1F6]"
                     aria-label={`Read article: ${title}`}
                   >
                     <div className="flex items-start justify-between gap-3">

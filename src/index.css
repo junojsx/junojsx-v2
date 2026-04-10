@@ -60,7 +60,7 @@
     --color-dark-gray:     #2C2C2C;
     --color-light-gray:    #F5F5F5;
     --color-hover-active:  #3A2D3B;
-    --color-input-focus:   #A288BF;
+    --color-input-focus:   #5E4080; /* darkened from #A288BF — 8.3:1 on white, ≥7.6:1 on cream backgrounds (WCAG 1.4.11) */
     --color-bronze:        #94632F;
 
     /* Font */
@@ -89,7 +89,7 @@
     --destructive: oklch(0.577 0.245 27.325);
     --border: #A288BF;
     --input: #A288BF;
-    --ring: #A288BF;
+    --ring: #5E4080;
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
@@ -102,12 +102,14 @@
     --sidebar-accent: #5DB2AC;
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: #A288BF;
-    --sidebar-ring: #A288BF;
+    --sidebar-ring: #5E4080;
 }
 
-/* Global focus indicator — WCAG 2.4.11 */
+/* Global focus indicator — WCAG 1.4.11 (Non-text Contrast) and 2.4.11 (Focus Visible).
+   #5E4080 has ≥3:1 contrast against every light surface used on the site
+   (white, #F5F5F5, #F5F3EF, #F8F7F5, #FBF9F5). */
 :focus-visible {
-    outline: 3px solid #A288BF;
+    outline: 3px solid #5E4080;
     outline-offset: 2px;
 }
 

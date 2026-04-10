@@ -84,7 +84,7 @@ export default function AccessibleComponents({ standalone = false }: Props) {
                 aria-pressed={activeCategory === value}
                 onClick={() => setActiveCategory(value)}
                 className={cn(
-                  "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2",
+                  "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2",
                   activeCategory === value
                     ? "border-deep-purple bg-deep-purple text-white"
                     : "border-[#2C2C2C]/20 bg-white text-dark-gray hover:border-deep-purple/50 hover:text-deep-purple",

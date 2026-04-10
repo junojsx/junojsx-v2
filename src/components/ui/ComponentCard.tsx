@@ -36,7 +36,7 @@ export function ComponentCard({ entry }: ComponentCardProps) {
           <Link
             to={`/components/${entry.id}`}
             aria-label={`Open ${entry.name} in full view`}
-            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#2C2C2C]/15 bg-white px-2 py-1 text-[10px] font-medium text-[#4E3C51] transition-colors hover:bg-[#4E3C51] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#A288BF] focus-visible:outline-offset-2"
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#2C2C2C]/15 bg-white px-2 py-1 text-[10px] font-medium text-[#4E3C51] transition-colors hover:bg-[#4E3C51] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#5E4080] focus-visible:outline-offset-2"
           >
             Open
             <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
@@ -70,7 +70,7 @@ export function ComponentCard({ entry }: ComponentCardProps) {
           aria-controls={previewPanelId}
           onClick={() => setActiveTab("preview")}
           className={cn(
-            "flex-1 px-4 py-2.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#A288BF]",
+            "flex-1 px-4 py-2.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#5E4080]",
             activeTab === "preview"
               ? "bg-white text-[#4E3C51] border-b-2 border-[#4E3C51]"
               : "bg-[#F5F5F5]/60 text-[#2C2C2C]/55 hover:text-[#2C2C2C]",
@@ -86,7 +86,7 @@ export function ComponentCard({ entry }: ComponentCardProps) {
           aria-controls={codePanelId}
           onClick={() => setActiveTab("code")}
           className={cn(
-            "flex-1 px-4 py-2.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#A288BF]",
+            "flex-1 px-4 py-2.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#5E4080]",
             activeTab === "code"
               ? "bg-white text-[#4E3C51] border-b-2 border-[#4E3C51]"
               : "bg-[#F5F5F5]/60 text-[#2C2C2C]/55 hover:text-[#2C2C2C]",

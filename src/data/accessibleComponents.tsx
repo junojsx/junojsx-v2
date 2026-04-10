@@ -78,7 +78,7 @@ function SkipNavPreview() {
                     href="#"
                     onClick={(e) => e.preventDefault()}
                     style={{ color: "#fff", fontSize: "11px", textDecoration: "none" }}
-                    className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#7041af] focus-visible:outline-offset-2 rounded-sm"
+                    className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#E3C16F] focus-visible:outline-offset-2 rounded-sm"
                   >
                     {label}
                   </a>
@@ -122,7 +122,7 @@ function AccessibleButtonPreview() {
         aria-pressed={liked}
         aria-label={liked ? "Unlike post" : "Like post"}
         onClick={toggle}
-        className="group relative inline-flex items-center gap-2 rounded-full border-2 px-5 py-2.5 text-sm font-semibold transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+        className="group relative inline-flex items-center gap-2 rounded-full border-2 px-5 py-2.5 text-sm font-semibold transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
         style={{
           borderColor: liked ? "#1A7A74" : "#2C2C2C33",
           color: liked ? "#1A7A74" : "#2C2C2C",
@@ -183,7 +183,7 @@ function LabeledFieldPreview() {
           placeholder="you@example.com"
           className="rounded-lg border px-3 py-2 text-sm outline-none transition-shadow"
           style={{
-            borderColor: hasError ? "#ef4444" : "#A288BF",
+            borderColor: hasError ? "#ef4444" : "#5E4080",
             boxShadow: hasError ? "0 0 0 2px #ef444433" : undefined,
           }}
         />
@@ -199,7 +199,7 @@ function LabeledFieldPreview() {
       <button
         type="button"
         onClick={() => setShowError(true)}
-        className="rounded-lg bg-[#4E3C51] px-4 py-2 text-sm font-medium text-white hover:bg-[#3A2D3B] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+        className="rounded-lg bg-[#4E3C51] px-4 py-2 text-sm font-medium text-white hover:bg-[#3A2D3B] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
       >
         Submit
       </button>
@@ -259,7 +259,7 @@ function FocusTrapPreview() {
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-[#4E3C51] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#3A2D3B] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+        className="rounded-lg bg-[#4E3C51] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#3A2D3B] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
       >
         Open dialog
       </button>
@@ -291,14 +291,14 @@ function FocusTrapPreview() {
                 <button
                   type="button"
                   onClick={close}
-                  className="rounded-lg border border-[#2C2C2C]/20 px-4 py-2 text-sm font-medium text-[#2C2C2C] hover:bg-[#F5F5F5] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+                  className="rounded-lg border border-[#2C2C2C]/20 px-4 py-2 text-sm font-medium text-[#2C2C2C] hover:bg-[#F5F5F5] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={close}
-                  className="rounded-lg bg-[#4E3C51] px-4 py-2 text-sm font-medium text-white hover:bg-[#3A2D3B] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+                  className="rounded-lg bg-[#4E3C51] px-4 py-2 text-sm font-medium text-white hover:bg-[#3A2D3B] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
                 >
                   Confirm
                 </button>
@@ -342,7 +342,7 @@ function DisclosurePreview() {
                 aria-expanded={expanded}
                 aria-controls={panelId}
                 onClick={() => setOpenId(expanded ? null : item.id)}
-                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-sm font-medium text-[#2C2C2C] text-left bg-white hover:bg-[#F5F5F5] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#A288BF]"
+                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-sm font-medium text-[#2C2C2C] text-left bg-white hover:bg-[#F5F5F5] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#5E4080]"
               >
                 {item.question}
                 <svg
@@ -391,14 +391,14 @@ function LiveRegionPreview() {
         <button
           type="button"
           onClick={() => announce("Settings saved successfully.", "polite")}
-          className="rounded-lg bg-[#1A7A74] px-4 py-2 text-sm font-medium text-white hover:bg-[#145f5a] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+          className="rounded-lg bg-[#1A7A74] px-4 py-2 text-sm font-medium text-white hover:bg-[#145f5a] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
         >
           Save (polite)
         </button>
         <button
           type="button"
           onClick={() => announce("Error: Could not complete request.", "assertive")}
-          className="rounded-lg bg-[#94632F] px-4 py-2 text-sm font-medium text-white hover:bg-[#7a5126] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+          className="rounded-lg bg-[#94632F] px-4 py-2 text-sm font-medium text-white hover:bg-[#7a5126] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
         >
           Error (assertive)
         </button>
@@ -673,7 +673,7 @@ function ProgressBarPreview() {
           outline: "none",
           transition: "background-color 0.2s",
         }}
-        className="focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+        className="focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
       >
         {currentStep >= SHIPPING_STEPS.length ? "Delivered!" : "Next Step"}
       </button>
@@ -725,7 +725,7 @@ function ToggletipPreview() {
             flexShrink: 0,
             outline: "none",
           }}
-          className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A288BF]"
+          className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5E4080]"
         >
           <img
             src="https://www.html5accessibility.com/tests/i.png"
@@ -835,7 +835,7 @@ function FlipCardPreview() {
           outline: "none",
           borderRadius: "16px",
         }}
-        className="focus-visible:ring-4 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+        className="focus-visible:ring-4 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
       >
         {/* Front */}
         <div
@@ -904,7 +904,7 @@ function FlipCardPreview() {
               textDecoration: "underline",
               textUnderlineOffset: "3px",
             }}
-            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ccff7d] focus-visible:outline-offset-2 rounded"
+            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2C2C2C] focus-visible:outline-offset-2 rounded"
           >
             Homepage
           </a>
@@ -1006,7 +1006,7 @@ function TabsPreview() {
                 transition: "background 0.18s, color 0.18s",
                 outline: "none",
               }}
-              className="focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+              className="focus-visible:ring-2 focus-visible:ring-[#5E4080] focus-visible:ring-offset-2"
             >
               {t.letter}
             </button>
@@ -1030,7 +1030,7 @@ function TabsPreview() {
             border: "1px solid #E4DEEC",
             outline: "none",
           }}
-          className="focus-visible:ring-2 focus-visible:ring-[#A288BF]"
+          className="focus-visible:ring-2 focus-visible:ring-[#5E4080]"
         >
           <h3 style={{ margin: 0, fontSize: "0.85rem", fontWeight: 700, color: "#4E3C51" }}>
             {t.title}
@@ -1156,7 +1156,7 @@ function ImageGalleryPreview() {
                 overflow: "hidden",
                 transition: "border-color 0.2s, transform 0.2s",
               }}
-              className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#A288BF] focus-visible:outline-offset-2"
+              className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#5E4080] focus-visible:outline-offset-2"
             >
               <img
                 src={img.src}
@@ -1856,7 +1856,7 @@ button {
 }
 
 button:focus-visible {
-  outline: 3px solid #A288BF;
+  outline: 3px solid #5E4080;
   outline-offset: 3px;
 }
 
@@ -2024,7 +2024,7 @@ document.addEventListener("keydown", (e) => {
 }
 
 .flip-card:focus-visible {
-  outline: 3px solid #A288BF;
+  outline: 3px solid #5E4080;
   outline-offset: 4px;
 }
 
@@ -2332,7 +2332,7 @@ tabs.forEach((tab, i) => {
 }
 
 .thumbnail-button:focus-visible {
-  outline: 2px solid #A288BF; /* input-focus */
+  outline: 2px solid #5E4080; /* input-focus */
   outline-offset: 2px;
 }
 
