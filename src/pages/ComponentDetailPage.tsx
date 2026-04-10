@@ -112,15 +112,22 @@ export default function ComponentDetailPage() {
               </button>
             </div>
 
-            {/* Preview panel — large stage */}
+            {/* Preview panel — large stage. Inner zoom scales the preview
+                up since each Preview component sizes its content for the
+                small grid card. */}
             <div
               id={previewPanelId}
               role="tabpanel"
               aria-labelledby={previewTabId}
               hidden={activeTab !== "preview"}
-              className="relative min-h-[70vh] bg-[#F8F7F5]"
+              className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-[#F8F7F5] py-8"
             >
-              <entry.Preview />
+              <div
+                style={{ zoom: 1.75 }}
+                className="w-full max-w-[420px]"
+              >
+                <entry.Preview />
+              </div>
             </div>
 
             {/* Code panel — full height, no inner scroll cap */}
