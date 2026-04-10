@@ -919,6 +919,383 @@ function FlipCardPreview() {
   );
 }
 
+// ─── 12. Accessible Tabs ─────────────────────────────────────────────────────
+
+function TabsPreview() {
+  const tabs = [
+    {
+      letter: "A",
+      title: "Aria",
+      body: "ARIA roles like role=\"tablist\", role=\"tab\", and role=\"tabpanel\" tell assistive tech how the widget is wired together.",
+    },
+    {
+      letter: "B",
+      title: "Buttons",
+      body: "Each tab is a real <button> — keyboard activation, focus styles, and Enter/Space all come for free.",
+    },
+    {
+      letter: "C",
+      title: "Controls",
+      body: "aria-controls links a tab to its panel; aria-labelledby links the panel back. Both directions matter.",
+    },
+    {
+      letter: "D",
+      title: "Direction keys",
+      body: "Arrow keys move focus between tabs. Home jumps to the first, End to the last — the WAI-ARIA tabs pattern.",
+    },
+    {
+      letter: "E",
+      title: "Elected one",
+      body: "Roving tabindex: only the active tab is in the Tab order (tabindex=0); the others are tabindex=-1.",
+    },
+  ];
+  const [active, setActive] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  function handleKey(e: React.KeyboardEvent<HTMLButtonElement>) {
+    let next = active;
+    if (e.key === "ArrowRight") next = (active + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") next = (active - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = tabs.length - 1;
+    else return;
+    e.preventDefault();
+    setActive(next);
+    tabRefs.current[next]?.focus();
+  }
+
+  return (
+    <div className="flex h-full flex-col justify-center px-5 py-5">
+      <div
+        role="tablist"
+        aria-label="Alphabet tabs"
+        style={{
+          display: "flex",
+          gap: "4px",
+          padding: "4px",
+          background: "#EFEAF4",
+          borderRadius: "10px",
+        }}
+      >
+        {tabs.map((t, i) => {
+          const isActive = i === active;
+          return (
+            <button
+              key={t.letter}
+              ref={(el) => {
+                tabRefs.current[i] = el;
+              }}
+              role="tab"
+              type="button"
+              id={`preview-tab-${t.letter}`}
+              aria-selected={isActive}
+              aria-controls={`preview-panel-${t.letter}`}
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => setActive(i)}
+              onKeyDown={handleKey}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                borderRadius: "7px",
+                border: "none",
+                cursor: "pointer",
+                background: isActive ? "#4E3C51" : "transparent",
+                color: isActive ? "#fff" : "#4E3C51",
+                transition: "background 0.18s, color 0.18s",
+                outline: "none",
+              }}
+              className="focus-visible:ring-2 focus-visible:ring-[#A288BF] focus-visible:ring-offset-2"
+            >
+              {t.letter}
+            </button>
+          );
+        })}
+      </div>
+
+      {tabs.map((t, i) => (
+        <div
+          key={t.letter}
+          role="tabpanel"
+          id={`preview-panel-${t.letter}`}
+          aria-labelledby={`preview-tab-${t.letter}`}
+          hidden={i !== active}
+          tabIndex={0}
+          style={{
+            marginTop: "12px",
+            padding: "14px 16px",
+            borderRadius: "10px",
+            background: "#fff",
+            border: "1px solid #E4DEEC",
+            outline: "none",
+          }}
+          className="focus-visible:ring-2 focus-visible:ring-[#A288BF]"
+        >
+          <h3 style={{ margin: 0, fontSize: "0.85rem", fontWeight: 700, color: "#4E3C51" }}>
+            {t.title}
+          </h3>
+          <p style={{ margin: "6px 0 0", fontSize: "0.72rem", lineHeight: 1.55, color: "#2C2C2C" }}>
+            {t.body}
+          </p>
+        </div>
+      ))}
+
+      <p className="mt-3 text-center text-[10px] text-[#2C2C2C]/55">
+        ← → Arrow keys · Home / End
+      </p>
+    </div>
+  );
+}
+
+// ─── 13. Accessible Image Gallery / Lightbox ────────────────────────────────
+
+function ImageGalleryPreview() {
+  const images = [
+    { src: "https://placecats.com/neo/600/600", alt: "Kitten Neo" },
+    { src: "https://placecats.com/bella/600/600", alt: "Kitten Bella" },
+    { src: "https://placecats.com/millie/600/600", alt: "Kitten Millie" },
+    { src: "https://placecats.com/louie/600/600", alt: "Kitten Louie" },
+  ];
+  const [enlarged, setEnlarged] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const prevBtnRef = useRef<HTMLButtonElement | null>(null);
+  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
+  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (lightboxIndex !== null) {
+      const t = setTimeout(() => closeBtnRef.current?.focus(), 30);
+      return () => clearTimeout(t);
+    } else if (lastTriggerRef.current) {
+      lastTriggerRef.current.focus();
+    }
+  }, [lightboxIndex]);
+
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setLightboxIndex(null);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setLightboxIndex((idx) => (idx === null ? 0 : (idx + 1) % images.length));
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setLightboxIndex((idx) =>
+          idx === null ? 0 : (idx - 1 + images.length) % images.length,
+        );
+      } else if (e.key === "Tab") {
+        const order = [closeBtnRef.current, prevBtnRef.current, nextBtnRef.current].filter(
+          Boolean,
+        ) as HTMLElement[];
+        if (order.length === 0) return;
+        const i = order.indexOf(document.activeElement as HTMLElement);
+        e.preventDefault();
+        const nextI = e.shiftKey
+          ? (i - 1 + order.length) % order.length
+          : (i + 1) % order.length;
+        order[nextI].focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [lightboxIndex, images.length]);
+
+  function openAt(i: number, trigger: HTMLButtonElement) {
+    lastTriggerRef.current = trigger;
+    setLightboxIndex(i);
+  }
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center p-4">
+      <div className="relative w-full max-w-[260px]">
+        {/* Enlarged photo */}
+        <div
+          style={{
+            borderRadius: "10px",
+            overflow: "hidden",
+            border: "1px solid #E4DEEC",
+            background: "#fff",
+            marginBottom: "8px",
+            boxShadow: "0 2px 8px rgba(78, 60, 81, 0.08)",
+          }}
+        >
+          <img
+            src={images[enlarged].src}
+            alt={images[enlarged].alt}
+            style={{
+              width: "100%",
+              height: "140px",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        </div>
+
+        {/* Thumbnails */}
+        <div style={{ display: "flex", gap: "6px" }}>
+          {images.map((img, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Expand ${img.alt} into lightbox view`}
+              onMouseOver={() => setEnlarged(i)}
+              onFocus={() => setEnlarged(i)}
+              onClick={(e) => openAt(i, e.currentTarget)}
+              style={{
+                flex: 1,
+                padding: 0,
+                border:
+                  enlarged === i ? "2px solid #4E3C51" : "2px solid #E4DEEC",
+                borderRadius: "8px",
+                background: "transparent",
+                cursor: "pointer",
+                overflow: "hidden",
+                transition: "border-color 0.2s, transform 0.2s",
+              }}
+              className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#A288BF] focus-visible:outline-offset-2"
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                style={{
+                  width: "100%",
+                  height: "42px",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </button>
+          ))}
+        </div>
+
+        {/* Lightbox */}
+        {lightboxIndex !== null && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image lightbox"
+            style={{
+              position: "absolute",
+              inset: "-12px",
+              background: "rgba(46, 33, 49, 0.92)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 50,
+              borderRadius: "12px",
+            }}
+          >
+            <button
+              ref={closeBtnRef}
+              type="button"
+              onClick={() => setLightboxIndex(null)}
+              aria-label="Close lightbox"
+              style={{
+                position: "absolute",
+                top: "8px",
+                right: "8px",
+                width: "28px",
+                height: "28px",
+                borderRadius: "9999px",
+                background: "#4E3C51",
+                color: "#fff",
+                border: "1px solid #B6A5D0",
+                fontSize: "16px",
+                lineHeight: 1,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#E3C16F] focus-visible:outline-offset-2"
+            >
+              ×
+            </button>
+            <div style={{ textAlign: "center" }}>
+              <img
+                src={images[lightboxIndex].src}
+                alt={images[lightboxIndex].alt}
+                style={{
+                  maxWidth: "170px",
+                  maxHeight: "130px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  border: "2px solid #B6A5D0",
+                  display: "block",
+                  margin: "0 auto",
+                }}
+              />
+              <div
+                style={{
+                  marginTop: "10px",
+                  display: "flex",
+                  gap: "8px",
+                  justifyContent: "center",
+                }}
+              >
+                <button
+                  ref={prevBtnRef}
+                  type="button"
+                  aria-label="Previous image"
+                  onClick={() =>
+                    setLightboxIndex((idx) =>
+                      idx === null ? 0 : (idx - 1 + images.length) % images.length,
+                    )
+                  }
+                  style={{
+                    background: "#1A7A74",
+                    color: "#fff",
+                    border: "none",
+                    padding: "5px 12px",
+                    fontSize: "13px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                  }}
+                  className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#E3C16F] focus-visible:outline-offset-2"
+                >
+                  ‹
+                </button>
+                <button
+                  ref={nextBtnRef}
+                  type="button"
+                  aria-label="Next image"
+                  onClick={() =>
+                    setLightboxIndex((idx) =>
+                      idx === null ? 0 : (idx + 1) % images.length,
+                    )
+                  }
+                  style={{
+                    background: "#1A7A74",
+                    color: "#fff",
+                    border: "none",
+                    padding: "5px 12px",
+                    fontSize: "13px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                  }}
+                  className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#E3C16F] focus-visible:outline-offset-2"
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <p className="mt-3 text-center text-[10px] text-[#2C2C2C]/55">
+        Hover / focus thumbs · Click to open · Esc / ← → in lightbox
+      </p>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -1743,6 +2120,424 @@ document.addEventListener('DOMContentLoaded', function () {
     link.setAttribute('tabindex', flipped ? '0' : '-1');
   }
 });`,
+  },
+  {
+    id: "tabs",
+    name: "Accessible Tabs",
+    description:
+      "WAI-ARIA tabs pattern with proper roles, arrow-key navigation, and roving tabindex so screen readers and keyboard users get full first-class support.",
+    category: "disclosure",
+    tags: ["role=tablist", "arrow-keys", "roving-tabindex", "WAI-ARIA"],
+    Preview: TabsPreview,
+    code: `<!-- HTML -->
+<div class="tabs">
+  <div role="tablist" aria-label="Alphabet sections">
+    <button role="tab" id="tab-A" aria-selected="true"  aria-controls="panel-A" tabindex="0">A</button>
+    <button role="tab" id="tab-B" aria-selected="false" aria-controls="panel-B" tabindex="-1">B</button>
+    <button role="tab" id="tab-C" aria-selected="false" aria-controls="panel-C" tabindex="-1">C</button>
+    <button role="tab" id="tab-D" aria-selected="false" aria-controls="panel-D" tabindex="-1">D</button>
+    <button role="tab" id="tab-E" aria-selected="false" aria-controls="panel-E" tabindex="-1">E</button>
+  </div>
+
+  <div role="tabpanel" id="panel-A" aria-labelledby="tab-A" tabindex="0">
+    <h3>Aria</h3>
+    <p>ARIA roles tell assistive tech how the widget is wired together.</p>
+  </div>
+  <div role="tabpanel" id="panel-B" aria-labelledby="tab-B" tabindex="0" hidden>
+    <h3>Buttons</h3>
+    <p>Each tab is a real &lt;button&gt; — Enter / Space activation comes for free.</p>
+  </div>
+  <div role="tabpanel" id="panel-C" aria-labelledby="tab-C" tabindex="0" hidden>
+    <h3>Controls</h3>
+    <p>aria-controls links a tab to its panel; aria-labelledby links it back.</p>
+  </div>
+  <div role="tabpanel" id="panel-D" aria-labelledby="tab-D" tabindex="0" hidden>
+    <h3>Direction keys</h3>
+    <p>Arrow keys move focus between tabs. Home / End jump to first / last.</p>
+  </div>
+  <div role="tabpanel" id="panel-E" aria-labelledby="tab-E" tabindex="0" hidden>
+    <h3>Elected one</h3>
+    <p>Roving tabindex: only the active tab is in the Tab order.</p>
+  </div>
+</div>
+
+/* CSS */
+.tabs [role="tablist"] {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #efeaf4;
+  border-radius: 10px;
+}
+
+.tabs [role="tab"] {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #4e3c51;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
+.tabs [role="tab"][aria-selected="true"] {
+  background: #4e3c51;
+  color: #fff;
+}
+
+.tabs [role="tab"]:focus-visible {
+  outline: 2px solid #a288bf;
+  outline-offset: 2px;
+}
+
+.tabs [role="tabpanel"] {
+  margin-top: 12px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #e4deec;
+  border-radius: 10px;
+}
+
+.tabs [role="tabpanel"]:focus-visible {
+  outline: 2px solid #a288bf;
+  outline-offset: 2px;
+}
+
+/* JavaScript */
+const tablist = document.querySelector('[role="tablist"]');
+const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')));
+
+function activate(index) {
+  tabs.forEach((tab, i) => {
+    const selected = i === index;
+    tab.setAttribute('aria-selected', String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+    panels[i].hidden = !selected;
+  });
+  tabs[index].focus();
+}
+
+tabs.forEach((tab, i) => {
+  tab.addEventListener('click', () => activate(i));
+
+  tab.addEventListener('keydown', (e) => {
+    const last = tabs.length - 1;
+    let next;
+    switch (e.key) {
+      case 'ArrowRight': next = i === last ? 0 : i + 1; break;
+      case 'ArrowLeft':  next = i === 0 ? last : i - 1; break;
+      case 'Home':       next = 0; break;
+      case 'End':        next = last; break;
+      default: return;
+    }
+    e.preventDefault();
+    activate(next);
+  });
+});`,
+  },
+  {
+    id: "image-gallery",
+    name: "Accessible Image Gallery",
+    description:
+      "Thumbnail gallery with hover/focus preview and a lightbox modal — focus is trapped inside, Escape closes, and focus returns to the triggering thumbnail on close.",
+    category: "navigation",
+    tags: ["lightbox", "focus-trap", "return-focus", "keyboard-nav"],
+    Preview: ImageGalleryPreview,
+    code: `<!-- HTML -->
+<div class="image-gallery">
+  <!-- Enlarged photo -->
+  <div class="enlarged-photo">
+    <img decoding="async" src="https://placecats.com/neo/600/600" alt="Kitten Neo">
+  </div>
+
+  <!-- Row of thumbnails -->
+  <div class="thumbnails">
+    <div class="thumbnail-button" role="button" tabindex="0" aria-label="Expand image into lightbox view">
+      <img decoding="async" src="https://placecats.com/neo/600/600" alt="Kitten Neo">
+    </div>
+    <div class="thumbnail-button" role="button" tabindex="0" aria-label="Expand image into lightbox view">
+      <img decoding="async" src="https://placecats.com/bella/600/600" alt="Kitten Bella">
+    </div>
+    <div class="thumbnail-button" role="button" tabindex="0" aria-label="Expand image into lightbox view">
+      <img decoding="async" src="https://placecats.com/millie/600/600" alt="Kitten Millie">
+    </div>
+    <div class="thumbnail-button" role="button" tabindex="0" aria-label="Expand image into lightbox view">
+      <img decoding="async" src="https://placecats.com/louie/600/600" alt="Kitten Louie">
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox view (initially hidden) -->
+<div class="lightbox-view hidden" role="dialog" aria-modal="true" aria-label="Image lightbox">
+  <button class="close-btn" aria-label="Close lightbox">&times;</button>
+  <div class="lightbox-content">
+    <img decoding="async" src="" alt="Lightbox image">
+    <div class="navigation">
+      <button class="prev-btn" aria-label="Previous image">&lt;</button>
+      <button class="next-btn" aria-label="Next image">&gt;</button>
+    </div>
+  </div>
+</div>
+
+/* CSS — themed with the portfolio palette */
+.image-gallery {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* Enlarged photo */
+.enlarged-photo {
+  text-align: center;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #E4DEEC;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(78, 60, 81, 0.08);
+}
+
+.enlarged-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Thumbnails row */
+.thumbnails {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.thumbnail-button {
+  flex: 1;
+  display: inline-block;
+  overflow: hidden;
+  border: 2px solid #E4DEEC;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fff;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.thumbnail-button:hover,
+.thumbnail-button:focus-visible {
+  border-color: #4E3C51; /* deep-purple */
+  transform: translateY(-2px);
+}
+
+.thumbnail-button:focus-visible {
+  outline: 2px solid #A288BF; /* input-focus */
+  outline-offset: 2px;
+}
+
+.thumbnail-button img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease-in-out;
+}
+
+.thumbnail-button:hover img {
+  transform: scale(1.05);
+}
+
+/* Lightbox overlay */
+.lightbox-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(46, 33, 49, 0.92); /* deep-purple wash */
+  z-index: 9999;
+  overflow: auto;
+}
+
+.lightbox-view.hidden {
+  display: none;
+}
+
+.lightbox-content {
+  position: relative;
+  text-align: center;
+  color: #fff;
+  max-width: 90vw;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 12px;
+  border: 2px solid #B6A5D0; /* soft-lavender frame */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  background-color: #4E3C51; /* deep-purple */
+  border: 1px solid #B6A5D0;
+  border-radius: 9999px;
+  cursor: pointer;
+  z-index: 100;
+  transition: background-color 0.25s ease;
+}
+
+.close-btn:hover {
+  background-color: #3A2D3B; /* hover-active */
+}
+
+.close-btn:focus-visible {
+  outline: 2px solid #E3C16F; /* warm-gold */
+  outline-offset: 2px;
+}
+
+/* Prev / next nav */
+.navigation {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.navigation button {
+  background: #1A7A74; /* soft-teal */
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.navigation button:hover {
+  background: #155F5A;
+  transform: translateY(-1px);
+}
+
+.navigation button:focus-visible {
+  outline: 2px solid #E3C16F;
+  outline-offset: 2px;
+}
+
+/* JavaScript */
+const thumbnails = document.querySelectorAll(".thumbnails img");
+const thumbnailBtns = document.querySelectorAll(".thumbnail-button");
+const enlargedPhoto = document.querySelector(".enlarged-photo");
+const lightboxView = document.querySelector(".lightbox-view");
+const lightboxImage = document.querySelector(".lightbox-view .lightbox-content img");
+const closeBtn = document.querySelector(".lightbox-view .close-btn");
+const nextBtn = document.querySelector(".lightbox-view .next-btn");
+const prevBtn = document.querySelector(".lightbox-view .prev-btn");
+let currentImageIndex = 0;
+let lastFocusedThumbnail = null;
+
+// Update enlarged photo on hover or focus
+function updateEnlargedPhoto(event) {
+  const src =
+    event.target.tagName === "IMG"
+      ? event.target.src
+      : event.target.querySelector("img").src;
+  enlargedPhoto.innerHTML = \`<img decoding="async" src="\${src}" alt="Enlarged image">\`;
+}
+
+// Focus trap inside the lightbox
+function manageFocusTrap(event) {
+  if (event.key !== "Tab") return;
+  const order = [closeBtn, prevBtn, nextBtn];
+  const i = order.indexOf(document.activeElement);
+  if (i === -1) return;
+  event.preventDefault();
+  const next = event.shiftKey
+    ? (i - 1 + order.length) % order.length
+    : (i + 1) % order.length;
+  order[next].focus();
+}
+
+// Open lightbox
+function openLightbox(event) {
+  const src =
+    event.target.tagName === "IMG"
+      ? event.target.src
+      : event.target.querySelector("img").src;
+  lightboxImage.src = src;
+  lightboxView.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  lastFocusedThumbnail = event.currentTarget;
+  document.addEventListener("keydown", manageFocusTrap);
+  document.addEventListener("keydown", onEscape);
+  setTimeout(() => closeBtn.focus(), 50);
+}
+
+// Close lightbox + restore focus
+function closeLightbox() {
+  lightboxView.classList.add("hidden");
+  document.body.style.overflow = "auto";
+  document.removeEventListener("keydown", manageFocusTrap);
+  document.removeEventListener("keydown", onEscape);
+  if (lastFocusedThumbnail) lastFocusedThumbnail.focus();
+}
+
+function onEscape(event) {
+  if (event.key === "Escape") closeLightbox();
+}
+
+// Update lightbox to current image
+function updateLightboxImage() {
+  lightboxImage.src = thumbnails[currentImageIndex].src;
+}
+
+function goToNextImage() {
+  currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
+  updateLightboxImage();
+}
+
+function goToPrevImage() {
+  currentImageIndex =
+    (currentImageIndex - 1 + thumbnails.length) % thumbnails.length;
+  updateLightboxImage();
+}
+
+// Wire it up
+thumbnails.forEach((thumbnail) => {
+  thumbnail.addEventListener("mouseover", updateEnlargedPhoto);
+});
+
+thumbnailBtns.forEach((thumbnail, i) => {
+  thumbnail.addEventListener("focus", updateEnlargedPhoto);
+  thumbnail.addEventListener("click", (e) => {
+    currentImageIndex = i;
+    openLightbox(e);
+  });
+  thumbnail.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      currentImageIndex = i;
+      openLightbox(event);
+    }
+  });
+});
+
+closeBtn.addEventListener("click", closeLightbox);
+nextBtn.addEventListener("click", goToNextImage);
+prevBtn.addEventListener("click", goToPrevImage);
+
+updateLightboxImage();`,
   },
 ];
 
