@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { cn } from "@/lib/utils";
@@ -24,12 +26,22 @@ export function ComponentCard({ entry }: ComponentCardProps) {
     >
       {/* Card header */}
       <div className="px-5 pt-5 pb-4 border-b border-[#2C2C2C]/08">
-        <h2
-          id={`card-title-${entry.id}`}
-          className="text-base font-semibold text-[#162B4D] leading-snug"
-        >
-          {entry.name}
-        </h2>
+        <div className="flex items-start justify-between gap-3">
+          <h2
+            id={`card-title-${entry.id}`}
+            className="text-base font-semibold text-[#162B4D] leading-snug"
+          >
+            {entry.name}
+          </h2>
+          <Link
+            to={`/components/${entry.id}`}
+            aria-label={`Open ${entry.name} in full view`}
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#2C2C2C]/15 bg-white px-2 py-1 text-[10px] font-medium text-[#4E3C51] transition-colors hover:bg-[#4E3C51] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#A288BF] focus-visible:outline-offset-2"
+          >
+            Open
+            <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+          </Link>
+        </div>
         <p className="mt-1.5 text-sm text-[#2C2C2C]/65 leading-relaxed">
           {entry.description}
         </p>
