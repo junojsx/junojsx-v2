@@ -1296,6 +1296,177 @@ function ImageGalleryPreview() {
   );
 }
 
+// ─── Loading Spinner Overlay ────────────────────────────────────────────────
+
+function LoadingSpinnerPreview() {
+  const [phase, setPhase] = useState<"idle" | "loading" | "loaded">("idle");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const handleLoad = () => {
+    setPhase("loading");
+    timerRef.current = setTimeout(() => setPhase("loaded"), 3000);
+  };
+
+  const handleReset = () => {
+    setPhase("idle");
+  };
+
+  return (
+    <div className="flex h-full min-h-[280px] flex-col items-center justify-center gap-3 p-4">
+      <p className="max-w-xs text-center text-xs text-[#2C2C2C]/70">
+        Click the button to trigger a loading overlay with spinner.
+      </p>
+
+      {/* Mini browser frame */}
+      <div className="relative w-full max-w-sm overflow-hidden rounded-lg border border-[#2C2C2C]/15 bg-white shadow-sm">
+        <div className="flex min-h-[200px] items-center justify-center p-6">
+          {/* Idle state — Load button */}
+          {phase === "idle" && (
+            <button
+              type="button"
+              onClick={handleLoad}
+              style={{
+                padding: "10px 22px",
+                fontSize: "14px",
+                fontWeight: 600,
+                border: "none",
+                borderRadius: "6px",
+                backgroundColor: "#4E3C51",
+                color: "#fff",
+                cursor: "pointer",
+                transition: "background-color 0.2s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#3A2D3B")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#4E3C51")
+              }
+            >
+              Load Content
+            </button>
+          )}
+
+          {/* Loaded state — content + reset */}
+          {phase === "loaded" && (
+            <div style={{ textAlign: "center", padding: "8px" }}>
+              <h3
+                style={{
+                  margin: "0 0 8px",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  color: "#2C2C2C",
+                  fontFamily: "var(--font-display)",
+                }}
+              >
+                Content Loaded
+              </h3>
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "#2C2C2C",
+                  opacity: 0.65,
+                  lineHeight: 1.6,
+                  margin: "0 0 14px",
+                }}
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
+              <button
+                type="button"
+                onClick={handleReset}
+                style={{
+                  padding: "8px 18px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  border: "none",
+                  borderRadius: "6px",
+                  backgroundColor: "#1A7A74",
+                  color: "#fff",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#156b66")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#1A7A74")
+                }
+              >
+                Reset Page
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Loading overlay */}
+        {phase === "loading" && (
+          <div
+            role="alert"
+            aria-live="assertive"
+            aria-label="Loading content"
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              backdropFilter: "blur(4px)",
+              zIndex: 10,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "12px",
+                padding: "24px 32px",
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+              }}
+            >
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  border: "3.5px solid #B6A5D0",
+                  borderTopColor: "#4E3C51",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                }}
+              />
+              <span
+                style={{
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  color: "#4E3C51",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Now Loading…
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <p className="mt-1 text-center text-[10px] text-[#2C2C2C]/55">
+        Click "Load Content" · Spinner shows for 3 s · Then content appears
+      </p>
+    </div>
+  );
+}
+
 // ─── Data export ─────────────────────────────────────────────────────────────
 
 export const accessibleComponents: ComponentEntry[] = [
@@ -2538,6 +2709,169 @@ nextBtn.addEventListener("click", goToNextImage);
 prevBtn.addEventListener("click", goToPrevImage);
 
 updateLightboxImage();`,
+  },
+  {
+    id: "loading-spinner",
+    name: "Loading Spinner Overlay",
+    description:
+      "A full-screen loading overlay with animated spinner and status text — uses role=\"alert\" and aria-live to announce loading state to screen readers.",
+    category: "feedback",
+    tags: ["loading", "spinner", "overlay", "aria-live", "WCAG 4.1.3"],
+    Preview: LoadingSpinnerPreview,
+    code: `<!-- HTML -->
+<body>
+  <!-- Loading Spinner Overlay -->
+  <div class="overlay" aria-hidden="true" tabindex="-1">
+    <div class="spinner" role="alert">
+      <div class="spinner-text">Now Loading...</div>
+      <div class="spinner-icon"></div>
+    </div>
+  </div>
+
+  <!-- Load Content Button -->
+  <button id="loadButton">Load Content</button>
+
+  <!-- Content Loaded Section -->
+  <div class="content-section" aria-hidden="true" tabindex="-1">
+    <h2>Content Loaded</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+       Sed do eiusmod tempor incididunt ut labore et dolore
+       magna aliqua.</p>
+    <button id="resetButton">Reset Page</button>
+  </div>
+</body>
+
+/* CSS */
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  background-color: #005E86;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.spinner-icon {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.spinner-text {
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.content-section {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.content-section h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #333;
+}
+
+.content-section p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+}
+
+// JavaScript
+const loadButton = document.getElementById('loadButton');
+const resetButton = document.getElementById('resetButton');
+const overlay = document.querySelector('.overlay');
+const contentSection = document.querySelector('.content-section');
+
+function showLoadingSpinner() {
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden', 'false');
+  contentSection.style.display = 'none';
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    hideLoadingSpinner();
+  }, 5000);
+}
+
+function hideLoadingSpinner() {
+  overlay.style.display = 'none';
+  overlay.setAttribute('aria-hidden', 'true');
+  contentSection.style.display = 'block';
+  contentSection.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'auto';
+}
+
+loadButton.addEventListener('click', () => {
+  showLoadingSpinner();
+  loadButton.style.display = 'none';
+});
+
+resetButton.addEventListener('click', () => {
+  contentSection.style.display = 'none';
+  loadButton.style.display = 'block';
+});`,
   },
 ];
 

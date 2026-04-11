@@ -145,6 +145,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* Spinner keyframe for loading overlay */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Smooth scrolling — respects prefers-reduced-motion */
 @media (prefers-reduced-motion: no-preference) {
     html {
