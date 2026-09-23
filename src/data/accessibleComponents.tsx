@@ -164,6 +164,9 @@ function LabeledFieldPreview() {
 
   return (
     <div className="flex flex-col justify-center gap-4 h-full p-6 w-full max-w-xs mx-auto">
+      <p className="text-xs text-[#2C2C2C]/55">
+        Required fields are marked with asterisks (<span aria-hidden="true" className="text-red-500">*</span>).
+      </p>
       <div className="flex flex-col gap-1.5">
         <label htmlFor={id} className="text-sm font-medium text-[#2C2C2C]">
           Email address <span aria-hidden="true" className="text-red-500 ml-0.5">*</span>
@@ -192,7 +195,7 @@ function LabeledFieldPreview() {
         </p>
         {hasError && (
           <p id={errorId} role="alert" className="text-xs text-red-500 font-medium">
-            Email is required.
+            Email is required. Please enter a valid email address (e.g. example@email.com).
           </p>
         )}
       </div>
