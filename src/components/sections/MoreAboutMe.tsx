@@ -9,7 +9,7 @@ const experiences = [
       "Leading software deployments and managing client onboarding initiatives. Configuring systems, resolving technical issues, and ensuring successful product adoption.",
   },
   {
-    period: "FEB 2025 – PRESENT",
+    period: "FEB 2025 – FEB 2026",
     title: "Contract Accessibility Auditor",
     company: "AudioEye",
     description:
